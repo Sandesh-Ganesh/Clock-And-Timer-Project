@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Main App Theme -->
+    <style name="Theme.ClockAndTimerApp" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/primary_orange</item>
+        <item name="colorPrimaryDark">@color/primary_orange_dark</item>
+        <item name="colorAccent">@color/accent_orange</item>
+
+        <!-- Backgrounds -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnBackground">@color/on_background</item>
+
+        <!-- Text Colors -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+
+        <!-- System Bars -->
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+    </style>
+
+    <!-- Bottom Navigation Text Active -->
+    <style name="BottomNavTextActive" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/accent_orange</item>
+    </style>
+
+    <!-- Bottom Navigation Text Inactive -->
+    <style name="BottomNavTextInactive" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+</resources>
+
+
+<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
+
+<!--    <style name="Theme.ClockAndTimerApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
+<!--        &lt;!&ndash; Primary Colors &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/dark_background</item>-->
+<!--        <item name="colorOnPrimary">@color/dark_on_background</item>-->
+
+<!--        &lt;!&ndash; Secondary Accent &ndash;&gt;-->
+<!--        <item name="colorSecondary">@color/accent_orange</item>-->
+<!--        <item name="colorOnSecondary">@color/dark_background</item>-->
+
+<!--        &lt;!&ndash; Backgrounds &ndash;&gt;-->
+<!--        <item name="colorBackground">@color/dark_background</item>-->
+<!--        <item name="colorOnBackground">@color/dark_on_background</item>-->
+
+<!--        &lt;!&ndash; Navigation/Status bar &ndash;&gt;-->
+<!--        <item name="android:statusBarColor">@color/dark_background</item>-->
+<!--        <item name="android:navigationBarColor">@color/dark_background</item>-->
+<!--    </style>-->
+
+<!--</resources>-->
+
+<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
+<!--    <style name="Theme.ClockAndTimerApp" parent="Base.Theme.ClockAndTimerApp" />-->
+<!--    <style name="Theme.MyClockApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">-->
+<!--        &lt;!&ndash; Primary Colors &ndash;&gt;-->
+<!--        <item name="colorPrimary">#121212</item>-->
+<!--        <item name="colorPrimaryVariant">#1F1F1F</item>-->
+<!--        <item name="colorOnPrimary">#FFFFFF</item>-->
+
+<!--        &lt;!&ndash; Secondary Accent &ndash;&gt;-->
+<!--        <item name="colorSecondary">#FF9800</item>-->
+<!--        <item name="colorOnSecondary">#000000</item>-->
+
+<!--        &lt;!&ndash; Backgrounds &ndash;&gt;-->
+<!--        <item name="android:windowBackground">#121212</item>-->
+<!--        <item name="android:colorBackground">#121212</item>-->
+<!--        <item name="colorOnBackground">#FFFFFF</item>-->
+
+<!--        &lt;!&ndash; BottomNav Active/Inactive &ndash;&gt;-->
+<!--        <item name="android:textColorPrimary">#FFFFFF</item>-->
+<!--        <item name="android:textColorSecondary">#B3B3B3</item>-->
+<!--    </style>-->
+<!--    <style name="BottomNavTextActive" parent="TextAppearance.Material3.LabelSmall">-->
+<!--        <item name="android:textSize">12sp</item>-->
+<!--        <item name="android:maxLines">1</item>-->
+<!--        <item name="android:ellipsize">end</item>-->
+<!--    </style>-->
+
+<!--    <style name="BottomNavTextInactive" parent="TextAppearance.Material3.LabelSmall">-->
+<!--        <item name="android:textSize">12sp</item>-->
+<!--        <item name="android:maxLines">1</item>-->
+<!--        <item name="android:ellipsize">end</item>-->
+<!--    </style>-->
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+
+<!--    <style name="Base.Theme.ClockTimer" parent="Theme.Material3.Dark.NoActionBar">-->
+<!--        <item name="colorPrimary">@color/primary_orange</item>-->
+<!--        <item name="colorPrimaryDark">@color/primary_orange_dark</item>-->
+<!--        <item name="colorAccent">@color/accent_orange</item>-->
+<!--        <item name="android:colorBackground">@color/background_dark</item>-->
+<!--        <item name="colorSurface">@color/surface_dark</item>-->
+<!--        <item name="colorOnBackground">@color/on_background</item>-->
+<!--        <item name="android:textColorPrimary">@color/text_primary</item>-->
+<!--        <item name="android:textColorSecondary">@color/text_secondary</item>-->
+<!--        <item name="android:statusBarColor">@color/background_dark</item>-->
+<!--        <item name="android:navigationBarColor">@color/background_dark</item>-->
+<!--    </style>-->
+
+
+
+<!--</resources>-->

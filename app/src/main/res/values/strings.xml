@@ -1,0 +1,42 @@
+<resources>
+    <!-- Lab 4d: Custom App Name -->
+    <string name="app_name">Clock and Timer</string>
+
+    <!-- Navigation Titles -->
+    <string name="title_world_clock">World Clock</string>
+    <string name="title_alarm">Alarm</string>
+    <string name="title_stopwatch">Stopwatch</string>
+    <string name="title_timer">Timer</string>
+    <string name="title_games">Games</string>
+
+    <!-- General Labels and Placeholders -->
+    <string name="add_clock_fab">Add World Clock</string>
+    <string name="add_alarm_fab">Add Alarm</string>
+    <string name="settings_icon">Settings</string>
+
+    <!-- Placeholder Strings for World Clock Layout -->
+    <string name="placeholder_time">--:--:--</string>
+    <string name="placeholder_am_pm">--</string>
+    <string name="placeholder_timezone">Loading Timezone</string>
+    <string name="placeholder_date">Loading Date, Day</string>
+
+    <!-- Placeholder Strings for Stopwatch Layout -->
+    <string name="placeholder_stopwatch_time">00:00.00</string>
+    <string name="label_start">START</string>
+    <string name="label_pause">PAUSE</string>
+    <string name="label_reset">RESET</string>
+
+    <!-- Placeholder Strings for Timer Layout -->
+    <string name="placeholder_timer_display">00:25:00</string>
+    <string name="preset_1min">1:00</string>
+    <string name="preset_5min">5:00</string>
+    <string name="preset_15min">15:00</string>
+    <string name="label_pomodoro">Pomodoro</string>
+
+    <!-- Placeholder Strings for Games Layout -->
+    <string name="select_game_timer_title">Select Game Timer</string>
+    <string name="chess_timer_title">Chess Timer</string>
+    <string name="kabaddi_timer_title">Kabaddi Timer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

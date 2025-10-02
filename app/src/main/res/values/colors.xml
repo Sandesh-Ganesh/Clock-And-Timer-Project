@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary App Colors -->
+    <color name="primary_blue">#1976D2</color>
+    <color name="primary_blue_dark">#0D47A1</color>
+    <color name="accent_red">#D32F2F</color>
+
+    <!-- Backgrounds (Dark Theme) -->
+    <color name="dark_background">#000000</color>
+    <color name="card_background">#1C1C1E</color>
+    <color name="input_background">#3A3A3C</color>
+
+    <!-- Text Colors -->
+    <color name="text_light">#FFFFFF</color>
+    <color name="text_muted">#AAAAAA</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="purple_500">#673AB7</color>
+    <color name="purple_700">#512DA8</color>
+
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="on_background">#FFFFFF</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="inactive_item">#B3B3B3</color>
+
+    <!-- Additional Colors -->
+    <color name="primary_orange">#FF9800</color>
+    <color name="primary_orange_dark">#F57C00</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3B3B3</color>
+    <color name="divider">#2C2C2C</color>
+
+    <!-- Team Colors -->
+    <color name="team_a_bg">#263238</color>
+    <color name="team_b_bg">#263238</color>
+    <color name="team_active">#FF9800</color>
+</resources>
