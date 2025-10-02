@@ -18,21 +18,44 @@
     <color name="purple_500">#673AB7</color>
     <color name="purple_700">#512DA8</color>
 
-    <color name="background_dark">#121212</color>
-    <color name="surface_dark">#1E1E1E</color>
+<!--    <color name="background_dark">#121212</color>-->
+<!--    <color name="surface_dark">#1E1E1E</color>-->
     <color name="on_background">#FFFFFF</color>
-    <color name="accent_orange">#FF9800</color>
+<!--    <color name="accent_orange">#FF9800</color>-->
     <color name="inactive_item">#B3B3B3</color>
 
     <!-- Additional Colors -->
     <color name="primary_orange">#FF9800</color>
     <color name="primary_orange_dark">#F57C00</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B3B3B3</color>
+<!--    <color name="text_primary">#FFFFFF</color>-->
+<!--    <color name="text_secondary">#B3B3B3</color>-->
     <color name="divider">#2C2C2C</color>
 
     <!-- Team Colors -->
     <color name="team_a_bg">#263238</color>
     <color name="team_b_bg">#263238</color>
     <color name="team_active">#FF9800</color>
+
+    <!-- Backgrounds -->
+    <color name="background_dark">#000000</color>
+    <color name="surface_dark">#0D0D0D</color>
+    <color name="surface_secondary">#161616</color>
+    <color name="divider_dark">#222222</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3B3B3</color>
+
+    <!-- Accent Colors -->
+    <color name="accent_blue">#448AFF</color> <!-- FAB, active icons -->
+    <color name="accent_orange">#FF9800</color> <!-- optional secondary accent -->
+
+    <!-- Team Colors (matching image) -->
+    <color name="team_a_active_color">#FF9800</color> <!-- Deep Orange -->
+    <color name="on_team_a_active">#000000</color>   <!-- Black text on orange panel -->
+    <color name="team_a_score_color">#FF9800</color>
+
+    <color name="team_b_active_color">#1976D2</color> <!-- Primary Blue -->
+    <color name="on_team_b_active">#FFFFFF</color>   <!-- White text on blue panel -->
+    <color name="team_b_score_color">#FFFFFF</color>
 </resources>

@@ -6,189 +6,340 @@
     android:orientation="vertical"
     android:background="@color/background_dark">
 
-    <!-- Main Match Timer Section -->
+    <!-- Top Section: Match Timer & Score (Content unchanged) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:gravity="center"
-        android:background="@color/surface_dark">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Match Timer"
-            android:textSize="16sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="8dp" />
+        android:background="@color/surface_secondary">
 
         <TextView
             android:id="@+id/tv_match_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="20:00"
-            android:textSize="48sp"
-            android:textColor="@color/accent_orange"
+            android:textSize="56sp"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
-            android:fontFamily="monospace" />
+            android:fontFamily="monospace"
+            android:layout_marginBottom="4dp"/>
 
-        <TextView
-            android:id="@+id/tv_half_indicator"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="First Half"
-            android:textSize="18sp"
-            android:textColor="@color/on_background"
-            android:layout_marginTop="8dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
 
+            <TextView
+                android:id="@+id/tv_half_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First Half"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" | Half-time at 10:00"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:id="@+id/tv_team_a_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:textSize="32sp"
+                android:textColor="@color/team_a_score_color"
+                android:textStyle="bold"
+                android:layout_marginEnd="32dp"/>
+
+            <TextView
+                android:id="@+id/tv_team_b_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12"
+                android:textSize="32sp"
+                android:textColor="@color/team_b_score_color"
+                android:textStyle="bold"
+                android:layout_marginStart="32dp"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Team Panels Container -->
+    <!-- Raid Panels Container (Content unchanged) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- Team A Panel -->
-        <LinearLayout
-            android:id="@+id/panel_team_a"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <!-- Team A Raid Panel -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp"
-            android:background="@color/team_a_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/surface_dark"
+            android:layout_marginBottom="16dp">
 
-            <TextView
-                android:id="@+id/tv_team_a_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Team A"
-                android:textSize="24sp"
-                android:textColor="@color/on_background"
-                android:textStyle="bold"
-                android:layout_marginBottom="24dp" />
+            <LinearLayout
+                android:id="@+id/panel_team_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Raid Timer"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:background="@color/team_a_active_color">
 
-            <TextView
-                android:id="@+id/tv_team_a_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="30"
-                android:textSize="56sp"
-                android:textColor="@color/on_background"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
+                    <TextView
+                        android:id="@+id/tv_team_a_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TEAM\nA"
+                        android:textSize="12sp"
+                        android:textColor="@color/on_team_a_active"
+                        android:textStyle="bold"
+                        android:gravity="center_horizontal"/>
+                </LinearLayout>
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-        <!-- Divider -->
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@color/divider" />
+                    <TextView
+                        android:id="@+id/tv_team_a_timer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:30"
+                        android:textSize="48sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginEnd="16dp" />
 
-        <!-- Team B Panel -->
-        <LinearLayout
-            android:id="@+id/panel_team_b"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_team_a_start"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="START"
+                        android:backgroundTint="@color/team_a_active_color"
+                        android:textColor="@color/on_team_a_active"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Team B Raid Panel -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp"
-            android:background="@color/team_b_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/surface_dark">
 
-            <TextView
-                android:id="@+id/tv_team_b_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Team B"
-                android:textSize="24sp"
-                android:textColor="@color/on_background"
-                android:textStyle="bold"
-                android:layout_marginBottom="24dp" />
+            <LinearLayout
+                android:id="@+id/panel_team_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Raid Timer"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:background="@color/team_b_active_color">
 
-            <TextView
-                android:id="@+id/tv_team_b_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="30"
-                android:textSize="56sp"
-                android:textColor="@color/on_background"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
+                    <TextView
+                        android:id="@+id/tv_team_b_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TEAM\nB"
+                        android:textSize="12sp"
+                        android:textColor="@color/on_team_b_active"
+                        android:textStyle="bold"
+                        android:gravity="center_horizontal"/>
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_team_b_timeout_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Timeouts Left: 2"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:id="@+id/tv_team_b_timer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:30"
+                        android:textSize="48sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginEnd="16dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_team_b_start"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="START"
+                        android:backgroundTint="@color/team_b_active_color"
+                        android:textColor="@color/on_team_b_active"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
-    <!-- Control Buttons -->
+    <!-- STATE OVERLAY CONTAINER (Content unchanged) -->
+    <FrameLayout
+        android:id="@+id/fl_overlay_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationZ="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="#99000000">
+
+        <LinearLayout
+            android:id="@+id/timeout_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:padding="24dp"
+            android:background="@drawable/rounded_corner_red"
+            android:layout_marginHorizontal="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Timeout"
+                android:textSize="24sp"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/tv_timeout_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:30"
+                android:textSize="48sp"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Control Buttons (NOW USING MaterialButton) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="8dp"
         android:gravity="center"
         android:background="@color/surface_dark">
 
+        <!-- Pause/Start Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_pause"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Pause"
-            android:textColor="@color/accent_orange"
-            app:strokeColor="@color/accent_orange"
-            android:layout_marginEnd="8dp" />
+            android:text="PAUSE"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@android:color/transparent"
+            app:icon="@drawable/ic_pause"
+            app:iconTint="@color/text_primary"
+            app:iconGravity="top"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_timeout"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="Timeout"
-            android:textColor="@color/accent_orange"
-            app:strokeColor="@color/accent_orange"
-            android:layout_marginEnd="8dp" />
-
+        <!-- Reset Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_reset"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Reset"
-            android:textColor="@color/accent_orange"
-            app:strokeColor="@color/accent_orange" />
+            android:text="RESET"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@android:color/transparent"
+            app:icon="@drawable/ic_reset"
+            app:iconTint="@color/text_primary"
+            app:iconGravity="top"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+        <!-- Timeout Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_timeout"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TIMEOUT"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@android:color/transparent"
+            app:icon="@drawable/ic_timer_pause"
+            app:iconTint="@color/text_primary"
+            app:iconGravity="top"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
 
     </LinearLayout>
 

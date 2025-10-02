@@ -8,18 +8,29 @@
     tools:context=".MainActivity">
 
     <!-- Toolbar (removed - using bottom nav settings instead) -->
+<!--    <com.google.android.material.appbar.MaterialToolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:background="@color/background_dark"-->
+<!--        android:elevation="4dp"-->
+<!--        app:title="Clock"-->
+<!--        app:titleTextColor="@color/on_background"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/background_dark"
         android:elevation="4dp"
-        app:title="Clock"
-        app:titleTextColor="@color/on_background"
+        app:title="ClockAndTimerApp"
+        app:titleTextColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/toolbar_menu"/>
     <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragment_container"
