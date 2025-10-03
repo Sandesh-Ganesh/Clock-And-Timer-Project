@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Listen for changes in the fragment back stack
         fragmentManager.addOnBackStackChangedListener(() -> {
-            // Check if any fragment is stacked (e.g., SettingsFragment)
+            // Check if any fragment is stacked (e.g., SettingsFragment, Kabaddi fragments)
             boolean isSecondaryFragment = fragmentManager.getBackStackEntryCount() > 0;
 
             // Show or hide the Up button based on back stack count
@@ -77,14 +77,28 @@ public class MainActivity extends AppCompatActivity {
             // Manage BottomNavigationView visibility and state
             Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-            if (currentFragment instanceof SettingsFragment) {
-                // Secondary screen: Hide bottom nav and deselect items
-                bottomNavigationView.setVisibility(View.GONE);
-                bottomNavigationView.getMenu().setGroupCheckable(0, false, true);
-            } else {
+            // Check if current fragment is a secondary fragment (not a primary bottom nav fragment)
+            boolean isPrimaryFragment = currentFragment instanceof ClockFragment ||
+                    currentFragment instanceof AlarmFragment ||
+                    currentFragment instanceof StopwatchFragment ||
+                    currentFragment instanceof TimerFragment ||
+                    currentFragment instanceof GamesFragment;
+
+            if (isPrimaryFragment) {
                 // Primary screen: Show bottom nav and re-enable selection
                 bottomNavigationView.setVisibility(View.VISIBLE);
                 bottomNavigationView.getMenu().setGroupCheckable(0, true, true);
+
+                // Update toolbar title based on current primary fragment
+                updateToolbarTitleForFragment(currentFragment);
+            } else {
+                // Secondary screen: Hide bottom nav and deselect items
+                // (SettingsFragment, KabaddiSetupFragment, KabaddiMainFragment, etc.)
+                bottomNavigationView.setVisibility(View.GONE);
+                bottomNavigationView.getMenu().setGroupCheckable(0, false, true);
+
+                // Update toolbar title based on current secondary fragment
+                updateToolbarTitleForFragment(currentFragment);
             }
         });
 
@@ -139,5 +153,40 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null) // Add to stack to allow back navigation
                 .commit();
+    }
+
+    /**
+     * Public getter method for fragments to access BottomNavigationView
+     * This allows fragments to show/hide the bottom navigation if needed
+     */
+    public BottomNavigationView getBottomNavigationView() {
+        return bottomNavigationView;
+    }
+
+    /**
+     * Helper method to update toolbar title based on current fragment
+     */
+    private void updateToolbarTitleForFragment(Fragment fragment) {
+        String title = "Clock"; // default
+
+        if (fragment instanceof ClockFragment) {
+            title = "World Clock";
+        } else if (fragment instanceof AlarmFragment) {
+            title = "Alarm";
+        } else if (fragment instanceof StopwatchFragment) {
+            title = "Stopwatch";
+        } else if (fragment instanceof TimerFragment) {
+            title = "Timer";
+        } else if (fragment instanceof GamesFragment) {
+            title = "Games";
+        } else if (fragment instanceof SettingsFragment) {
+            title = "Settings";
+        } else if (fragment instanceof KabaddiSetupFragment) {
+            title = "Kabaddi Timer Setup";
+        } else if (fragment instanceof KabaddiMainFragment) {
+            title = "Kabaddi Match";
+        }
+
+        toolbar.setTitle(title);
     }
 }

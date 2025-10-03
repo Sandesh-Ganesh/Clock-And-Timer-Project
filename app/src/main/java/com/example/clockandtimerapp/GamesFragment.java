@@ -65,4 +65,6 @@ public class GamesFragment extends Fragment {
 
         requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner());
     }
+
+
 }
