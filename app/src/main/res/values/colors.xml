@@ -58,4 +58,17 @@
     <color name="team_b_active_color">#1976D2</color> <!-- Primary Blue -->
     <color name="on_team_b_active">#FFFFFF</color>   <!-- White text on blue panel -->
     <color name="team_b_score_color">#FFFFFF</color>
+
+    <!-- Stopwatch -->
+    <color name="sw_bg">#070809</color>
+<!--  main background  -->
+    <color name="sw_panel">#0E1114</color>
+    <color name="sw_accent">#2F66FF</color>
+    <!--  blue button  -->
+    <color name="sw_lap">#0D0D59</color>
+    <!--  lap box color  -->
+    <color name="sw_btn_dim">#22262B</color>
+    <!--  grey buttons  -->
+    <color name="sw_text_primary">#FFFFFF</color>
+    <color name="sw_text_secondary">#9AA0A6</color>
 </resources>

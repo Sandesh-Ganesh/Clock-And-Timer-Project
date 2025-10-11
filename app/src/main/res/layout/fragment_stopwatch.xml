@@ -1,13 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/sw_bg"
+    android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
+    <!-- Big timer -->
     <TextView
+        android:id="@+id/txtElapsed"
+        android:text="00:00.00"
+        android:textColor="@color/sw_text_primary"
+        android:textStyle="bold"
+        android:textSize="44sp"
+        android:fontFamily="monospace"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stopwatch Fragment"
-        android:textSize="24sp"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:layout_height="wrap_content" />
+
+    <!-- Laps -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLaps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:overScrollMode="ifContentScrolls" />
+
+    <!-- Bottom round controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <!-- Reset (grey) -->
+        <ImageView
+            android:id="@+id/btnReset"
+            android:contentDescription="Reset"
+            android:background="@drawable/bg_button_circle_dim"
+            android:src="@drawable/ic_reset"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:padding="18dp"
+            android:layout_marginEnd="24dp"
+            app:tint="@color/primary_blue"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            />
+
+        <!-- Play / Pause (blue) -->
+        <ImageView
+            android:id="@+id/btnStartPause"
+            android:contentDescription="Start/Pause"
+            android:background="@drawable/bg_button_circle_accent"
+            android:src="@drawable/ic_play_24"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:padding="20dp"
+            android:layout_marginEnd="24dp"
+            app:tint="@color/sw_text_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            />
+
+        <!-- Lap (grey) -->
+        <ImageView
+            android:id="@+id/btnLap"
+            android:contentDescription="Lap"
+            android:background="@drawable/bg_button_circle_dim"
+            android:src="@drawable/ic_flag_24"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:padding="18dp"
+            app:tint="@color/sw_text_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+</LinearLayout>

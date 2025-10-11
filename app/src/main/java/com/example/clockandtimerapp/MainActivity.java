@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.clockandtimerapp.stopwatch.StopwatchService;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.example.clockandtimerapp.stopwatch.StopwatchFragment;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -104,8 +106,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Load the initial default fragment without adding it to the back stack
         if (savedInstanceState == null) {
-            loadInitialFragment(new ClockFragment(), "World Clock");
-            bottomNavigationView.setSelectedItemId(R.id.nav_world_clock);
+            String fragmentToLoad = getIntent().getStringExtra(StopwatchService.EXTRA_FRAGMENT_TO_LOAD);
+            if ("Stopwatch".equals(fragmentToLoad)) {
+                // Notification clicked: Load StopwatchFragment
+                loadInitialFragment(new StopwatchFragment(), "Stopwatch");
+                bottomNavigationView.setSelectedItemId(R.id.nav_stopwatch);
+            } else {
+                // Default launch: Load ClockFragment
+                loadInitialFragment(new ClockFragment(), "World Clock");
+                bottomNavigationView.setSelectedItemId(R.id.nav_world_clock);
+            }
         }
     }
 
