@@ -44,6 +44,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/tv_fullTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -103,19 +104,20 @@
                 android:id="@+id/panel_team_a"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
 
                 <TextView
                     android:id="@+id/tv_team_a_name"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/team_a_active_color"
+                    android:background="@color/primary_blue"
                     android:gravity="center"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:text="TEAM\nA"
-                    android:textColor="@color/on_team_a_active"
+                    android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -178,12 +180,12 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/team_b_active_color"
+                    android:background="@color/inactive_kabaddi"
                     android:gravity="center"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:text="TEAM\nB"
-                    android:textColor="@color/on_team_b_active"
+                    android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -277,22 +279,22 @@
     <!-- Control Buttons (NOW USING MaterialButton) -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="125dp"
         android:background="@color/background_dark"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="4dp"
         android:paddingVertical="4dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginTop="20dp"
+        >
 
         <!-- Pause/Start Button (Icon-only, centered, max size) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_pause"
             style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="4dp"
-            android:layout_weight="1"
             android:backgroundTint="@color/surface_secondary"
             android:insetTop="0dp"
             android:insetBottom="0dp"
@@ -302,16 +304,19 @@
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="64dp"
-            app:iconTint="@color/text_primary" />
+            app:iconTint="@color/text_primary"
+            android:layout_marginEnd="10dp"/>
+
 
         <!-- Reset Button -->
+
+        <!-- Timeout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_reset"
             style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="4dp"
-            android:layout_weight="1"
             android:backgroundTint="@color/surface_secondary"
             android:insetTop="0dp"
             android:insetBottom="0dp"
@@ -324,25 +329,25 @@
             app:iconSize="64dp"
             app:iconTint="@color/text_primary" />
 
-        <!-- Timeout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_timeout"
             style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="4dp"
-            android:layout_weight="1"
             android:backgroundTint="@color/surface_secondary"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:padding="0dp"
             android:textColor="@color/text_primary"
             app:cornerRadius="120dp"
-            app:icon="@drawable/ic_timer_pause"
+            app:icon="@drawable/ic_stopwatch"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="64dp"
-            app:iconTint="@color/text_primary" />
+            app:iconTint="@color/text_primary"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
 
     </LinearLayout>
 

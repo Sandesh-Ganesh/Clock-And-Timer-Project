@@ -39,4 +39,19 @@
     <string name="kabaddi_timer_title">Kabaddi Timer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="delete_clock_title">Delete Clock?</string>
+    <string name="delete_clock_message">Are you sure you want to delete the clock for %s?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- settings module -->
+    <string name="currently_set_to">Currently set to %s</string>
+
+    <!-- Chess Clock   -->
+    <string name="default_time_placeholder">-- | --</string>
+
+    <string name="add_alarm">Add Alarm</string>
+    <string name="delete">Delete</string>
+    <string name="pick_ringtone">Pick Ringtone</string>
 </resources>

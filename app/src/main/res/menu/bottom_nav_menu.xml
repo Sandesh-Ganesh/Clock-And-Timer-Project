@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_world_clock"
-        android:icon="@drawable/ic_clock"
+        android:icon="@drawable/ic_world"
         android:title="Clock" />
 
     <item
@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/nav_timer"
-        android:icon="@drawable/ic_timer"
+        android:icon="@drawable/ic_hourglass"
         android:title="Timer" />
 
     <item

@@ -7,13 +7,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.card.MaterialCardView;
+
+// Import the new ChessTimerFragment
+import com.example.clockandtimerapp.chess.ChessTimerFragment;
 
 public class GamesFragment extends Fragment {
 
@@ -36,13 +38,18 @@ public class GamesFragment extends Fragment {
             transaction.commit();
         });
 
-        // Chess Timer Click (Placeholder)
+        // Chess Timer Click (UPDATED)
         cardChess.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Chess Timer - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // Navigate to Chess Timer Fragment
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new ChessTimerFragment());
+            transaction.addToBackStack("Chess Timer"); // Adds the Chess screen to the back stack
+            transaction.commit();
         });
 
         return view;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -57,14 +64,11 @@ public class GamesFragment extends Fragment {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                // Since MainActivity handles the settings click via toolbar.setOnMenuItemClickListener,
-                // you can just return false here to let the Activity handle it.
+                // Return false to let the Activity handle the menu item click (e.g., Settings)
                 return false;
             }
         };
 
         requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner());
     }
-
-
 }

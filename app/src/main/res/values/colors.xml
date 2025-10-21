@@ -71,4 +71,43 @@
     <!--  grey buttons  -->
     <color name="sw_text_primary">#FFFFFF</color>
     <color name="sw_text_secondary">#9AA0A6</color>
+
+    <color name="light_gray">#FFCCCCCC</color>
+    <color name="blue_500">#FF2196F3</color>
+    <color name="red_500">#FFF44336</color>
+
+
+    <color name="color_primary_text">@color/white</color>
+    <color name="color_secondary_text">@color/light_gray</color>
+
+    <color name="inactive_mask">#99000000</color>
+    <color name="inactive_kabaddi">#353535</color>
+
+    <color name="inactive_button">#787878</color>
+
+    <color name="button_disabled_mask">#0A0A0A</color>
+    <color name="icon_disabled_tint">#3A3A3C</color>
+
+<!--    Kabaddi Timer-->
+    <color name="background">#0F1722</color>
+    <!--  dark slate  -->
+    <color name="panel_bg">#0B1220</color>
+    <color name="top_text_primary">#E6F0FF</color>
+    <color name="top_text_secondary">#A8B6D0</color>
+    <color name="bottom_text_primary">#FFEFE6</color>
+    <color name="bottom_text_secondary">#E0C5B5</color>
+    <color name="center_icon">#FFFFFF</color>
+    <color name="accent">#FF6B6B</color>
+
+
+    <color name="app_bg">#0B0F14</color>
+    <color name="card_bg">#2B374B</color>
+    <color name="icon_muted">#94A3B8</color>
+    <color name="blue">#2196F3</color>
+    <!--  Vibrate ON thumb color  -->
+    <color name="blue_light">#90CAF9</color>
+    <!--  Vibrate ON track color  -->
+    <color name="switch_thumb_off">#BDBDBD</color>
+    <color name="switch_track_off">#E0E0E0</color>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.example.clockandtimerapp;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -15,6 +16,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.example.clockandtimerapp.stopwatch.StopwatchFragment;
+import com.example.clockandtimerapp.worldclock.ClockFragment;
+import com.example.clockandtimerapp.chess.ChessTimerFragment;
+import com.example.clockandtimerapp.alarm.AlarmFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -93,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Update toolbar title based on current primary fragment
                 updateToolbarTitleForFragment(currentFragment);
+
+                invalidateOptionsMenu();
             } else {
                 // Secondary screen: Hide bottom nav and deselect items
                 // (SettingsFragment, KabaddiSetupFragment, KabaddiMainFragment, etc.)
@@ -101,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Update toolbar title based on current secondary fragment
                 updateToolbarTitleForFragment(currentFragment);
+
+                invalidateOptionsMenu();
             }
         });
 
@@ -119,6 +128,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem settingsItem = menu.findItem(R.id.action_settings);
+        if (settingsItem != null) {
+
+            // Check if we are on a secondary screen (i.e., back stack has items)
+            boolean isSecondaryFragment = fragmentManager.getBackStackEntryCount() > 0;
+
+            // Hide the settings icon if the Up button is visible (secondary screen)
+            settingsItem.setVisible(!isSecondaryFragment);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // R.menu.toolbar_menu contains your action_settings item
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
     // Handle Up button (back arrow) click
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -156,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Loads a secondary fragment (like Settings), adding it to the back stack.
      */
-    private void loadFragment(Fragment fragment, String title) {
+    public void loadFragment(Fragment fragment, String title) {
         toolbar.setTitle(title);
 
         fragmentManager.beginTransaction()
@@ -195,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
             title = "Kabaddi Timer Setup";
         } else if (fragment instanceof KabaddiMainFragment) {
             title = "Kabaddi Match";
+        } else if (fragment instanceof ChessTimerFragment) {
+            title = "Chess Timer"; // This is the title for the new screen
         }
 
         toolbar.setTitle(title);

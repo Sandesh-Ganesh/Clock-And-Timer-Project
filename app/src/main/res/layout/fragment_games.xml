@@ -39,9 +39,9 @@
             <ImageView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/ic_sports"
+                android:src="@drawable/ic_kabaddi"
                 android:layout_marginBottom="12dp"
-                app:tint="@color/accent_orange" />
+                app:tint="@color/accent_blue" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_height="64dp"
                 android:src="@drawable/ic_chess"
                 android:layout_marginBottom="12dp"
-                app:tint="@color/accent_orange" />
+                app:tint="@color/accent_blue" />
 
             <TextView
                 android:layout_width="wrap_content"

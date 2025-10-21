@@ -1,0 +1,25 @@
+<resources>
+    <string-array name="ampm">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
+
+    <string-array name="days">
+        <item>Select Day</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <string-array name="ringtones">
+        <item>Select Ringtone</item>
+        <item>Default</item>
+        <item>Blossom</item>
+        <item>Chimes</item>
+        <item>Select from Storage</item>
+    </string-array>
+</resources>
