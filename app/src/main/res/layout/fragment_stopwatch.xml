@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Big timer -->
     <TextView
         android:id="@+id/txtElapsed"
         android:text="00:00.00"
@@ -21,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <!-- Laps -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLaps"
         android:layout_width="match_parent"
@@ -31,7 +29,6 @@
         android:paddingBottom="4dp"
         android:overScrollMode="ifContentScrolls" />
 
-    <!-- Bottom round controls -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="96dp"
@@ -39,7 +36,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
 
-        <!-- Reset (grey) -->
         <ImageView
             android:id="@+id/btnReset"
             android:contentDescription="Reset"
@@ -55,7 +51,6 @@
             android:foreground="?attr/selectableItemBackgroundBorderless"
             />
 
-        <!-- Play / Pause (blue) -->
         <ImageView
             android:id="@+id/btnStartPause"
             android:contentDescription="Start/Pause"
@@ -71,7 +66,6 @@
             android:foreground="?attr/selectableItemBackgroundBorderless"
             />
 
-        <!-- Lap (grey) -->
         <ImageView
             android:id="@+id/btnLap"
             android:contentDescription="Lap"

@@ -45,7 +45,6 @@ public class StopwatchFragment extends Fragment {
     private boolean lastKnownRunning = false;
     private long lastKnownElapsed = 0L;
 
-    // ... (BroadcastReceiver remains the same) ...
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -68,6 +67,10 @@ public class StopwatchFragment extends Fragment {
                 }
             }
             lapAdapter.submit(laps);
+            // Scroll to the newest lap (LapAdapter should handle reversal, if needed)
+            if (!laps.isEmpty()) {
+                rvLaps.scrollToPosition(0);
+            }
         }
     };
 
@@ -115,7 +118,6 @@ public class StopwatchFragment extends Fragment {
 
         // --- Toolbar Menu Integration ---
         MenuProvider menuProvider = new MenuProvider() {
-            // ... (Your existing onCreateMenu and onMenuItemSelected methods) ...
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menu.clear();
@@ -163,14 +165,11 @@ public class StopwatchFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Stop the service entirely when the fragment is destroyed (user navigation)
-        // if you want to prevent it running indefinitely when leaving the tab.
         // Uncomment the following line if you want the timer to stop when leaving the stopwatch tab:
         // Intent i = new Intent(requireContext(), StopwatchService.class);
         // requireContext().stopService(i);
     }
 
-    // ... (onReset, showStatsDialog methods remain the same) ...
     private void onReset() {
         if (!laps.isEmpty()) {
             showStatsDialog();
@@ -186,8 +185,10 @@ public class StopwatchFragment extends Fragment {
         }
 
         ArrayList<Long> durations = new ArrayList<>();
+        // Lap durations are calculated from totals
         for (int i = 0; i < laps.size(); i++) {
             long totalThis = laps.get(i).getTotalAtMs();
+            // The lap total *before* this lap (or 0 if this is the last item, which is Lap 1)
             long totalNext = (i + 1 < laps.size()) ? laps.get(i + 1).getTotalAtMs() : 0L;
             durations.add(totalThis - totalNext);
         }
@@ -206,8 +207,8 @@ public class StopwatchFragment extends Fragment {
                 + "\nSlowest Lap: " + formatTime(slowest)
                 + "\nAverage Lap: " + formatTime(average);
 
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(),
-                com.google.android.material.R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+        // FIX: Using 0 lets the builder inherit the theme from the Activity/Fragment context
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), 0);
 
         builder.setTitle("Lap Statistics")
                 .setMessage(message)
@@ -237,7 +238,6 @@ public class StopwatchFragment extends Fragment {
         return String.format("%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 
-    // ... (onRequestPermissionsResult remains the same)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

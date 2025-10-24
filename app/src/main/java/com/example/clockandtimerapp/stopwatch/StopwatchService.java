@@ -33,13 +33,13 @@ public class StopwatchService extends Service {
     public static final String ACTION_RESET = BASE_ACTION + ".ACTION_RESET";
     public static final String ACTION_LAP = BASE_ACTION + ".ACTION_LAP";
     public static final String ACTION_UPDATE_BROADCAST = BASE_ACTION + ".ACTION_UPDATE";
-    public static final String ACTION_HIDE_NOTIFICATION = BASE_ACTION + ".ACTION_HIDE_NOTIFICATION"; // NEW
-    public static final String ACTION_SHOW_NOTIFICATION = BASE_ACTION + ".ACTION_SHOW_NOTIFICATION"; // NEW
+    public static final String ACTION_HIDE_NOTIFICATION = BASE_ACTION + ".ACTION_HIDE_NOTIFICATION";
+    public static final String ACTION_SHOW_NOTIFICATION = BASE_ACTION + ".ACTION_SHOW_NOTIFICATION";
 
     public static final String EXTRA_ELAPSED = "elapsedMs";
     public static final String EXTRA_RUNNING = "running";
     public static final String EXTRA_LAPS_TOTALS = "lapsTotals";
-    public static final String EXTRA_FRAGMENT_TO_LOAD = "fragmentToLoad"; // NEW for navigation
+    public static final String EXTRA_FRAGMENT_TO_LOAD = "fragmentToLoad";
 
     private static final String CHANNEL_ID = "stopwatch_channel";
     private static final int NOTIF_ID = 1001;
@@ -57,9 +57,8 @@ public class StopwatchService extends Service {
         public void run() {
             if (running) {
                 broadcastUpdate();
-                // We update the notification less often to save battery,
-                // but the UI broadcasts happen every 10ms.
-                // updateNotification();
+                // Update notification less often to save battery
+                updateNotification();
                 handler.postDelayed(this, 10); // FASTER TICKER (10ms)
             }
         }
@@ -74,52 +73,61 @@ public class StopwatchService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.getAction() != null) {
-            String a = intent.getAction();
-            switch (a) {
+        // --- CRITICAL FIX: Ensure startForeground is called immediately if running ---
+        String action = (intent != null) ? intent.getAction() : null;
+
+        boolean needsForeground = running || ACTION_START.equals(action);
+
+        if (needsForeground && !ACTION_PAUSE.equals(action) && !ACTION_RESET.equals(action) && !ACTION_HIDE_NOTIFICATION.equals(action)) {
+            // Call startForeground with initial notification (state will be updated shortly)
+            startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running || ACTION_START.equals(action)));
+        }
+
+        // --- Process Intent Action ---
+        if (action != null) {
+            switch (action) {
                 case ACTION_START:
                     startStopwatch();
-                    startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running)); // Start FG on START
+                    // startForeground was called above
                     break;
                 case ACTION_PAUSE:
                     pauseStopwatch();
-                    stopForeground(false); // Keep notification visible on pause (optional)
+                    stopForeground(false); // Keep notification visible on pause
                     break;
                 case ACTION_RESET:
                     resetStopwatch();
                     stopForeground(true); // Remove notification on reset
+                    stopSelf();
                     break;
                 case ACTION_LAP:
                     recordLap();
                     break;
-                case ACTION_HIDE_NOTIFICATION: // NEW
+                case ACTION_HIDE_NOTIFICATION:
                     stopForeground(true);
                     break;
-                case ACTION_SHOW_NOTIFICATION: // NEW
-                    if (running) {
-                        startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running));
-                    }
+                case ACTION_SHOW_NOTIFICATION:
+                    // startForeground was called outside the switch for safety
                     break;
             }
         }
 
-        // If service is started without a specific action, ensure state is maintained
-        if (running) {
-            // We only call startForeground/stopForeground via specific actions now
-            // startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running));
+        // Final safety check: if reset was NOT called, and the intent was null,
+        // and we were already running, ensure ticker is running.
+        if (running && action == null) {
+            handler.post(ticker);
         }
 
         return START_STICKY;
     }
 
-    // --- Timer Logic (startStopwatch, pauseStopwatch, etc.) remains the same ---
+    // --- Timer Logic (startStopwatch, pauseStopwatch, etc.) ---
     private void startStopwatch() {
         if (!running) {
             startRealtime = SystemClock.elapsedRealtime();
             running = true;
             handler.post(ticker);
             broadcastUpdate();
-            updateNotification(); // Initial notification update
+            updateNotification();
             Log.d(TAG, "started");
         }
     }
@@ -178,7 +186,6 @@ public class StopwatchService extends Service {
     }
 
     private void updateNotification() {
-        // Only update notification every 1 second (1000ms) to save battery/resources
         handler.removeCallbacks(notificationUpdater);
         handler.postDelayed(notificationUpdater, 1000);
     }
@@ -186,12 +193,13 @@ public class StopwatchService extends Service {
     private final Runnable notificationUpdater = new Runnable() {
         @Override
         public void run() {
-            Notification n = buildNotification(formatTime(getTotalElapsedMs()), running);
-            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nm != null) nm.notify(NOTIF_ID, n);
-
-            // Re-schedule for next second if running
+            // Check if we are still running before notifying again
             if (running) {
+                Notification n = buildNotification(formatTime(getTotalElapsedMs()), running);
+                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null) nm.notify(NOTIF_ID, n);
+
+                // Re-schedule for next second
                 handler.postDelayed(this, 1000);
             }
         }
@@ -199,10 +207,10 @@ public class StopwatchService extends Service {
 
 
     private Notification buildNotification(String timeText, boolean running) {
-        // FIX: Add EXTRA_FRAGMENT_TO_LOAD to ensure MainActivity opens the correct tab
+        // NOTE: MainActivity class needs to be defined in com.example.clockandtimerapp
         Intent openApp = new Intent(this, com.example.clockandtimerapp.MainActivity.class);
         openApp.putExtra(EXTRA_FRAGMENT_TO_LOAD, "Stopwatch");
-        openApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Good practice
+        openApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openApp, pendingFlags());
 
@@ -212,7 +220,7 @@ public class StopwatchService extends Service {
                 .setSmallIcon(R.drawable.ic_play_24)
                 .setColor(getColorCompat(R.color.sw_accent))
                 .setContentIntent(contentIntent)
-                .setOngoing(running) // Only set ongoing if timer is running
+                .setOngoing(running)
                 .setOnlyAlertOnce(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
@@ -239,7 +247,8 @@ public class StopwatchService extends Service {
 
         return b.build();
     }
-    // ... (rest of helper methods: pendingFlags, getColorCompat, createNotificationChannel, onBind, formatTime)
+
+    // --- Helper Methods ---
     private int pendingFlags() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
@@ -249,11 +258,8 @@ public class StopwatchService extends Service {
     }
 
     private int getColorCompat(int colorRes) {
-        try {
-            return getResources().getColor(colorRes, null);
-        } catch (Exception e) {
-            return getResources().getColor(colorRes);
-        }
+        // Use standard getColor method which is safer across SDKs
+        return getResources().getColor(colorRes, null);
     }
 
     private void createNotificationChannel() {
@@ -278,5 +284,11 @@ public class StopwatchService extends Service {
         long seconds = totalSeconds % 60;
         long hundredths = (ms % 1000) / 10;
         return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null); // Cleanup all pending runnables
     }
 }
