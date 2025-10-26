@@ -19,6 +19,8 @@ import com.example.clockandtimerapp.stopwatch.StopwatchFragment;
 import com.example.clockandtimerapp.worldclock.ClockFragment;
 import com.example.clockandtimerapp.chess.ChessTimerFragment;
 import com.example.clockandtimerapp.alarm.AlarmFragment;
+import com.example.clockandtimerapp.timer.TimerFragment;
+import com.example.clockandtimerapp.timer.pomodoroActivity;
 
 public class MainActivity extends AppCompatActivity {
 

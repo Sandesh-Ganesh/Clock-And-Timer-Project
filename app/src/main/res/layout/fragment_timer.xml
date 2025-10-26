@@ -1,13 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/background_dark"  tools:context=".timer.TimerFragment">
 
     <TextView
+        android:id="@+id/textViewCurrentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Timer Fragment"
-        android:textSize="24sp"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:layout_marginTop="10dp"
+        android:text="00:00:00"
+        android:textColor="@color/text_primary"
+        android:textSize="64sp"
+        android:fontFamily="monospace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textViewHrLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hr"
+        android:textColor="@color/text_secondary" android:textSize="18sp"
+        android:layout_marginStart="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPickerMin"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerHr"
+        app:layout_constraintTop_toTopOf="@+id/numberPickerMin" />
+
+    <NumberPicker
+        android:id="@+id/numberPickerHr"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp" android:theme="@style/NumberPickerTextColor" app:layout_constraintEnd_toStartOf="@+id/numberPickerMin"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
+
+    <TextView
+        android:id="@+id/textViewMinLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Min"
+        android:textColor="@color/text_secondary" android:textSize="18sp"
+        android:layout_marginStart="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPickerSec"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerMin"
+        app:layout_constraintTop_toTopOf="@+id/numberPickerSec" />
+
+    <NumberPicker
+        android:id="@+id/numberPickerMin"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="48dp" android:theme="@style/NumberPickerTextColor"
+        app:layout_constraintEnd_toStartOf="@+id/numberPickerSec"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerHr"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
+
+    <TextView
+        android:id="@+id/textViewSecLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sec"
+        android:textColor="@color/text_secondary" android:textSize="18sp"
+        android:layout_marginStart="0dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPickerSec"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerSec"
+        app:layout_constraintTop_toTopOf="@+id/numberPickerSec" />
+
+    <NumberPicker
+        android:id="@+id/numberPickerSec"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="48dp" android:layout_marginEnd="48dp"
+        android:theme="@style/NumberPickerTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerMin"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
+
+    <Button
+        android:id="@+id/button1Min"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/surface_secondary" android:text="1:00"
+        android:textColor="@color/text_primary" android:textSize="18sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/button5Min"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+
+    <Button
+        android:id="@+id/button5Min"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/surface_secondary" android:text="5:00"
+        android:textColor="@color/text_primary" android:textSize="18sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/button15Min"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button1Min"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+
+    <Button
+        android:id="@+id/button15Min"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/surface_secondary" android:text="15:00"
+        android:textColor="@color/text_primary" android:textSize="18sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button5Min"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+
+    <Button
+        android:id="@+id/buttonPomodoro"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/surface_secondary" android:paddingStart="48dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="48dp"
+        android:paddingBottom="16dp"
+        android:text="POMODORO"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button5Min" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPlayPause"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:focusable="true"
+
+        app:tint="@color/white"
+        app:srcCompat="@drawable/custom_pause_icon"
+        app:fabCustomSize="100dp"
+        app:maxImageSize="64dp"
+        app:borderWidth="0dp"
+
+        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"  app:layout_constraintTop_toBottomOf="@+id/buttonPomodoro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fabReset"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        tools:ignore="ContentDescription" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabReset"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:backgroundTint="@color/surface_dark"
+        app:tint="@color/text_primary"
+        app:srcCompat="@drawable/custom_reset_icon"
+        app:fabCustomSize="100dp"
+        app:maxImageSize="64dp"
+        app:borderWidth="0dp"
+
+        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"  app:layout_constraintTop_toTopOf="@+id/fabPlayPause"
+        app:layout_constraintBottom_toBottomOf="@+id/fabPlayPause"
+        app:layout_constraintStart_toEndOf="@+id/fabPlayPause"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

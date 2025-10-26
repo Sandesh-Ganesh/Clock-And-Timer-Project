@@ -50,6 +50,10 @@
             android:label="Alarm Ring"
             android:theme="@style/Theme.ClockDark"/>
 
+        <activity android:name="com.example.clockandtimerapp.timer.pomodoroActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
         <receiver
             android:name=".alarm.AlarmReceiver"
             android:exported="false"/>

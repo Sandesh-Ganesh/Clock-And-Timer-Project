@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- Slightly lighter dark grey for the selected segment -->
+    <solid android:color="#363636"/>
+    <!-- Radius matching the container's radius for a smooth look -->
+    <corners android:radius="20dp"/>
+</shape>

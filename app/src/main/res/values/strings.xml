@@ -54,4 +54,28 @@
     <string name="add_alarm">Add Alarm</string>
     <string name="delete">Delete</string>
     <string name="pick_ringtone">Pick Ringtone</string>
+
+<!--    Pomodoro Timer-->
+    <string name="toolbar_title">Pomodoro Timer</string>
+    <string name="mode_pomodoro">Pomodoro</string>
+    <string name="mode_short_break">Short Break</string>
+    <string name="mode_long_break">Long Break</string>
+    <string name="button_start">START</string>
+    <string name="button_end">END</string>
+    <string name="button_pause">PAUSE</string>
+    <string name="cycle_label">Cycle: %1$d / %2$d</string>
+    <string name="status_focus_time">Focus Time!</string>
+    <string name="status_short_rest">Short Rest.</string>
+    <string name="status_long_break_time">Time for a Long Break!</string>
+    <string name="status_paused">Paused.</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_times_up_break">Time\'s up! Take a break.</string>
+    <string name="status_break_over_work">Break over! Get back to work.</string>
+    <string name="toast_reset_session">Session Reset to Pomodoro</string>
+    <string name="toast_timer_running_warning">Timer running. Pause or End before switching modes.</string>
+    <string name="title_pomodoro_timer">Pomodoro Timer</string>
+    <string name="cycle_indicator">Cycle: 1 / 4</string>
+    <string name="initial_timer">15:00</string>
+    <string name="initial_status">Time for a Long Break!</string>
+    <string name="icon_back_arrow">←</string>
 </resources>

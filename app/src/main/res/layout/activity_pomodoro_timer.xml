@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".timer.pomodoroActivity">
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:paddingEnd="16dp"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pomodoro Timer"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mode_selector_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_dark_background"
+        android:padding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:id="@+id/btn_pomodoro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pomodoro"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/selected_mode_background"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btn_short_break"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Short Break"
+            android:textColor="@color/text_light_grey"
+            android:textSize="14sp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btn_long_break"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Long Break"
+            android:textColor="@color/text_light_grey"
+            android:textSize="14sp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_cycle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Cycle: 1 / 4"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mode_selector_group" />
+
+    <TextView
+        android:id="@+id/text_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="15:00"
+        android:textColor="@color/white"
+        android:textSize="80sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_cycle" />
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Time for a Long Break!"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_timer" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_start"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+
+        android:insetTop="0dp"                 android:insetBottom="0dp"
+        android:padding="0dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/primary_blue"
+
+        app:icon="@drawable/ic_play_24"
+        app:iconSize="64dp"                     app:iconTint="@color/white"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+
+        app:cornerRadius="75dp"                app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_end"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_status"
+        app:layout_constraintVertical_bias="0.4"
+        android:elevation="4dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_end"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/surface_secondary"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp"
+        android:layout_marginStart="16dp"
+
+        app:icon="@drawable/ic_close_24"
+        app:iconSize="64dp"
+        app:iconTint="@color/white"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+
+        app:cornerRadius="75dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_start"
+        app:layout_constraintTop_toTopOf="@+id/btn_start"
+        android:elevation="4dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

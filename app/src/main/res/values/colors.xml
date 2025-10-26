@@ -110,4 +110,9 @@
     <color name="switch_thumb_off">#BDBDBD</color>
     <color name="switch_track_off">#E0E0E0</color>
 
+    <color name="mode_selector_background_light">#424242</color>
+    <color name="text_light_grey">#BDBDBD</color>
+    <color name="button_green">#4CAF50</color>
+    <color name="button_red">#F44336</color>
+    <color name="selected_mode_blue">#2196F3</color>
 </resources>
