@@ -1,12 +1,10 @@
 package com.example.clockandtimerapp.stopwatch;
 
-import android.Manifest;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -28,95 +24,127 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clockandtimerapp.R;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.example.clockandtimerapp.stopwatch.Lap;
+import com.example.clockandtimerapp.stopwatch.LapAdapter;
+import com.example.clockandtimerapp.stopwatch.StopwatchService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class StopwatchFragment extends Fragment {
 
-    private static final int REQ_POST_NOTIFICATIONS = 100;
-
+    private boolean isRunning = false;
     private TextView txtElapsed;
-    private ImageView btnStartPause, btnReset, btnLap;
     private RecyclerView rvLaps;
     private LapAdapter lapAdapter;
-    private final ArrayList<Lap> laps = new ArrayList<>();
+    private final List<Lap> lapData = new ArrayList<>();
+    private long lastTotalElapsedMs = 0L;
 
-    private boolean lastKnownRunning = false;
-    private long lastKnownElapsed = 0L;
-
-    private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+    // Receiver to get state updates from StopwatchService
+    private final BroadcastReceiver stopwatchUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent == null) return;
-            long elapsed = intent.getLongExtra(StopwatchService.EXTRA_ELAPSED, 0L);
-            boolean running = intent.getBooleanExtra(StopwatchService.EXTRA_RUNNING, false);
-            long[] totals = intent.getLongArrayExtra(StopwatchService.EXTRA_LAPS_TOTALS);
+            if (StopwatchService.ACTION_UPDATE_BROADCAST.equals(intent.getAction())) {
+                long elapsedMs = intent.getLongExtra(StopwatchService.EXTRA_ELAPSED, 0L);
+                boolean serviceIsRunning = intent.getBooleanExtra(StopwatchService.EXTRA_RUNNING, false);
+                long[] lapsArray = intent.getLongArrayExtra(StopwatchService.EXTRA_LAPS_TOTALS);
 
-            lastKnownElapsed = elapsed;
-            lastKnownRunning = running;
-            txtElapsed.setText(formatTime(elapsed));
-            btnStartPause.setImageResource(running ? R.drawable.ic_pause_24 : R.drawable.ic_play_24);
-            btnLap.setEnabled(running);
-            btnReset.setEnabled(running || elapsed > 0);
+                lastTotalElapsedMs = elapsedMs;
+                txtElapsed.setText(formatTime(elapsedMs));
 
-            laps.clear();
-            if (totals != null) {
-                for (long t : totals) {
-                    laps.add(new Lap(t));
+                if (isRunning != serviceIsRunning) {
+                    isRunning = serviceIsRunning;
+                    updatePlayPauseIcon(getView());
                 }
-            }
-            lapAdapter.submit(laps);
-            // Scroll to the newest lap (LapAdapter should handle reversal, if needed)
-            if (!laps.isEmpty()) {
-                rvLaps.scrollToPosition(0);
+
+                // Update Lap List: Convert raw long[] to List<Lap>
+                if (lapsArray != null) {
+                    List<Lap> newLapList = new ArrayList<>(lapsArray.length);
+                    for (long totalTime : lapsArray) {
+                        newLapList.add(new Lap(totalTime));
+                    }
+                    lapAdapter.submit(newLapList);
+                }
             }
         }
     };
 
+    private void sendServiceAction(String action) {
+        Intent intent = new Intent(requireContext(), StopwatchService.class);
+        intent.setAction(action);
+
+        if (StopwatchService.ACTION_START.equals(action)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requireContext().startForegroundService(intent);
+            } else {
+                requireContext().startService(intent);
+            }
+        } else {
+            requireContext().startService(intent);
+        }
+    }
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_stopwatch, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View v, @Nullable Bundle s) {
-        super.onViewCreated(v, s);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        txtElapsed = v.findViewById(R.id.txtElapsed);
-        btnStartPause = v.findViewById(R.id.btnStartPause);
-        btnReset = v.findViewById(R.id.btnReset);
-        btnLap = v.findViewById(R.id.btnLap);
-        rvLaps = v.findViewById(R.id.rvLaps);
+        txtElapsed = view.findViewById(R.id.txtElapsed);
+        ImageView btnStartPause = view.findViewById(R.id.btnStartPause);
+        ImageView btnReset = view.findViewById(R.id.btnReset);
+        ImageView btnLap = view.findViewById(R.id.btnLap);
+        rvLaps = view.findViewById(R.id.rvLaps);
 
-        lapAdapter = new LapAdapter();
+        lapAdapter = new LapAdapter(lapData);
         rvLaps.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvLaps.setAdapter(lapAdapter);
 
-        btnStartPause.setOnClickListener(x -> sendServiceAction(lastKnownRunning
-                ? StopwatchService.ACTION_PAUSE
-                : StopwatchService.ACTION_START));
-
-        btnLap.setOnClickListener(x -> sendServiceAction(StopwatchService.ACTION_LAP));
-
-        btnReset.setOnClickListener(x -> onReset());
-
-        txtElapsed.setText(formatTime(0L));
-        btnLap.setEnabled(false);
-        btnReset.setEnabled(false);
-
-        // request POST_NOTIFICATIONS if needed
-        if (Build.VERSION.SDK_INT >= 33) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQ_POST_NOTIFICATIONS);
+        // 1. Play/Pause Button Logic
+        btnStartPause.setOnClickListener(v -> {
+            if (isRunning) {
+                sendServiceAction(StopwatchService.ACTION_PAUSE);
+            } else {
+                sendServiceAction(StopwatchService.ACTION_START);
             }
-        }
+        });
 
-        // --- Toolbar Menu Integration ---
+        // 2. Reset Button Logic - Check for stats
+        btnReset.setOnClickListener(v -> {
+            boolean lapsExist = !lapAdapter.data.isEmpty();
+            boolean timeExists = lastTotalElapsedMs > 0;
+
+            if (lapsExist) {
+                // Scenario 1: Laps exist. ALWAYS show stats dialog before resetting.
+                showStatsDialog();
+            } else if (timeExists) {
+                // Scenario 2: Time exists, but no laps. Perform immediate, silent reset.
+                sendServiceAction(StopwatchService.ACTION_RESET);
+                txtElapsed.setText(formatTime(0));
+                updatePlayPauseIcon(view);
+            } else {
+                // Scenario 3: Time is 0 and no laps. Do nothing (already reset).
+                // We still call the reset action for safety, though it shouldn't be necessary.
+                sendServiceAction(StopwatchService.ACTION_RESET);
+            }
+        });
+
+        // 3. Lap Button Logic
+        btnLap.setOnClickListener(v -> {
+            if (isRunning) {
+                sendServiceAction(StopwatchService.ACTION_LAP);
+            }
+        });
+
+        updatePlayPauseIcon(view);
+        txtElapsed.setText(formatTime(lastTotalElapsedMs));
+
         MenuProvider menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -129,122 +157,96 @@ public class StopwatchFragment extends Fragment {
                 return false;
             }
         };
+
         requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner());
     }
 
-    // --- Notification Visibility Control ---
+    private void showStatsDialog() {
+        List<Lap> allLaps = lapAdapter.data;
+        if (allLaps.isEmpty()) return;
+
+        long minLapTime = Long.MAX_VALUE;
+        long maxLapTime = Long.MIN_VALUE;
+        long totalLapTime = 0;
+        int lapCount = allLaps.size();
+
+        // Calculate the segment times to find min/max/average
+        for (int i = 0; i < lapCount; i++) {
+            long segment = allLaps.get(i).getLapMs(i, allLaps);
+
+            totalLapTime += segment;
+            if (segment < minLapTime) minLapTime = segment;
+            if (segment > maxLapTime) maxLapTime = segment;
+        }
+
+        long avgLapTime = lapCount > 0 ? totalLapTime / lapCount : 0L;
+
+        // Build the final statistics message
+        StringBuilder statSummary = new StringBuilder();
+        statSummary.append(String.format(Locale.getDefault(), "Total Time: %s\n\n", formatTime(lastTotalElapsedMs)));
+        statSummary.append(String.format(Locale.getDefault(), "Fastest Lap: %s\n", formatTime(minLapTime)));
+        statSummary.append(String.format(Locale.getDefault(), "Slowest Lap: %s\n", formatTime(maxLapTime)));
+        statSummary.append(String.format(Locale.getDefault(), "Average Lap: %s", formatTime(avgLapTime)));
+
+        // Show the dialog
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Stopwatch Statistics")
+                .setMessage(statSummary.toString())
+                .setPositiveButton("Reset", (dialog, which) -> {
+                    // Reset the service AND UI after viewing stats
+                    sendServiceAction(StopwatchService.ACTION_RESET);
+                    txtElapsed.setText(formatTime(0));
+                    updatePlayPauseIcon(getView());
+                    lapAdapter.submit(Arrays.asList()); // Clear the list
+                    lastTotalElapsedMs = 0L;
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(requireContext())
-                .registerReceiver(updateReceiver, new IntentFilter(StopwatchService.ACTION_UPDATE_BROADCAST));
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Hide notification when app is visible
-        sendServiceAction(StopwatchService.ACTION_HIDE_NOTIFICATION);
-    }
+        // 1. Register the BroadcastReceiver
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+                stopwatchUpdateReceiver, new IntentFilter(StopwatchService.ACTION_UPDATE_BROADCAST));
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Show notification when app goes to background, but ONLY if timer is running
-        if (lastKnownRunning) {
-            sendServiceAction(StopwatchService.ACTION_SHOW_NOTIFICATION);
-        }
+        // 2. FIX: Request the current state from the running service
+        // This makes sure the UI updates instantly when returning from the notification.
+        sendServiceAction(StopwatchService.ACTION_REQUEST_STATE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(updateReceiver);
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(stopwatchUpdateReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Uncomment the following line if you want the timer to stop when leaving the stopwatch tab:
-        // Intent i = new Intent(requireContext(), StopwatchService.class);
-        // requireContext().stopService(i);
+        sendServiceAction(StopwatchService.ACTION_RESET);
     }
 
-    private void onReset() {
-        if (!laps.isEmpty()) {
-            showStatsDialog();
-        } else {
-            sendServiceAction(StopwatchService.ACTION_RESET);
-        }
-    }
-
-    private void showStatsDialog() {
-        if (laps.isEmpty()) {
-            sendServiceAction(StopwatchService.ACTION_RESET);
-            return;
-        }
-
-        ArrayList<Long> durations = new ArrayList<>();
-        // Lap durations are calculated from totals
-        for (int i = 0; i < laps.size(); i++) {
-            long totalThis = laps.get(i).getTotalAtMs();
-            // The lap total *before* this lap (or 0 if this is the last item, which is Lap 1)
-            long totalNext = (i + 1 < laps.size()) ? laps.get(i + 1).getTotalAtMs() : 0L;
-            durations.add(totalThis - totalNext);
-        }
-
-        long fastest = durations.get(0);
-        long slowest = durations.get(0);
-        long sum = 0;
-        for (long d : durations) {
-            if (d < fastest) fastest = d;
-            if (d > slowest) slowest = d;
-            sum += d;
-        }
-        long average = sum / durations.size();
-
-        String message = "Fastest Lap: " + formatTime(fastest)
-                + "\nSlowest Lap: " + formatTime(slowest)
-                + "\nAverage Lap: " + formatTime(average);
-
-        // FIX: Using 0 lets the builder inherit the theme from the Activity/Fragment context
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), 0);
-
-        builder.setTitle("Lap Statistics")
-                .setMessage(message)
-                .setPositiveButton("OK", (dialog, which) -> sendServiceAction(StopwatchService.ACTION_RESET))
-                .setCancelable(false);
-
-        androidx.appcompat.app.AlertDialog dialog = builder.show();
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(Color.parseColor("#2F66FF"));
-    }
-
-    private void sendServiceAction(String action) {
-        Intent i = new Intent(requireContext(), StopwatchService.class);
-        i.setAction(action);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            requireContext().startForegroundService(i);
-        } else {
-            requireContext().startService(i);
+    private void updatePlayPauseIcon(View view) {
+        if (view == null) return;
+        ImageView btn = view.findViewById(R.id.btnStartPause);
+        if (btn != null) {
+            btn.setImageResource(isRunning ? R.drawable.ic_pause_24 : R.drawable.ic_play_24);
         }
     }
 
     private static String formatTime(long ms) {
-        long totalSeconds = ms / 1000;
-        long minutes = totalSeconds / 60;
-        long seconds = totalSeconds % 60;
+        long hours = ms / 3600000;
+        long minutes = (ms % 3600000) / 60000;
+        long seconds = (ms % 60000) / 1000;
         long hundredths = (ms % 1000) / 10;
-        return String.format("%02d:%02d.%02d", minutes, seconds, hundredths);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQ_POST_NOTIFICATIONS) {
-            // nothing special: user allowed or denied; notification may still be blocked in system settings
+        if (hours > 0) {
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", hours, minutes, seconds, hundredths);
         } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
         }
     }
 }

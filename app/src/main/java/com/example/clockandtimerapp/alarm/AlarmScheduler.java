@@ -39,13 +39,30 @@ public final class AlarmScheduler {
         }
 
         // --- 2. EXISTING SCHEDULING LOGIC (Only runs if permission is granted or not needed) ---
-        PendingIntent pi = buildPendingIntent(ctx, alarm);
+
+        // This PI is the Broadcast that fires when the alarm time hits.
+        PendingIntent piTrigger = buildPendingIntent(ctx, alarm);
+
+        // --- MODIFICATION: Create an Activity PI for the AlarmClockInfo (optional but best practice) ---
+        // This Intent tells the system what to launch if the user taps the alarm icon on the status bar/lock screen.
+        Intent showIntent = new Intent(ctx, AlarmRingActivity.class);
+        showIntent.putExtra("id", alarm.id);
+        showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent piShow = PendingIntent.getActivity(
+                ctx,
+                alarm.id, // Use the same request code as the trigger for consistency
+                showIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        // --- END MODIFICATION ---
 
         long trigger = nextTriggerUtcMillis(alarm.hour24, alarm.minute, alarm.dayOfWeek);
 
         // Use AlarmClockInfo for user-visible alarms
-        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(trigger, pi);
-        am.setAlarmClock(info, pi);
+        // Use piShow as the ShowIntent
+        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(trigger, piShow);
+        am.setAlarmClock(info, piTrigger); // piTrigger is the intent that calls AlarmReceiver
     }
 
     // FIX: Added public static

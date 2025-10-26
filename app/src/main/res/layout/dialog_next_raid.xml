@@ -53,7 +53,7 @@
             android:layout_marginTop="20dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Cancel Pause"
+            android:text="Cancel"
             android:textColor="@color/light_gray"
             android:textSize="14sp" />
 

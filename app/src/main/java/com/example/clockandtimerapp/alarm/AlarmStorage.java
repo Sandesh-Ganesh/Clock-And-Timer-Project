@@ -65,6 +65,21 @@ public final class AlarmStorage {
         sp.edit().putString(KEY_JSON, arr.toString()).apply();
     }
 
+    /**
+     * Checks if an alarm with the same hour, minute, and dayOfWeek already exists.
+     * Note: This only checks against currently ENABLED alarms.
+     */
+    public static boolean isDuplicate(Context ctx, int hour24, int minute, int dayOfWeek) {
+        ArrayList<Alarm> existingAlarms = load(ctx);
+        for (Alarm a : existingAlarms) {
+            if (a.enabled && a.hour24 == hour24 && a.minute == minute && a.dayOfWeek == dayOfWeek) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     // FIX: Added public static
     public static boolean isInitialized(Context ctx) {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);

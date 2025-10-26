@@ -1,3 +1,5 @@
+// WorldClockAdapter.java
+
 package com.example.clockandtimerapp.worldclock;
 
 import android.content.Context;
@@ -26,16 +28,14 @@ public class WorldClockAdapter extends RecyclerView.Adapter<WorldClockAdapter.Cl
     private final List<TimezoneInfo> clockList;
     private final OnDeleteClickListener deleteListener;
 
-    // Handler and Runnable for updating clock times in the list every minute
     private final Handler updateHandler = new Handler();
     private final Runnable updateRunnable = new Runnable() {
         @Override
         public void run() {
-            // Only update if items are present
             if (getItemCount() > 0) {
                 notifyDataSetChanged();
             }
-            updateHandler.postDelayed(this, 60000); // Update every 1 minute
+            updateHandler.postDelayed(this, 60000);
         }
     };
 
@@ -60,22 +60,24 @@ public class WorldClockAdapter extends RecyclerView.Adapter<WorldClockAdapter.Cl
     public void onBindViewHolder(@NonNull ClockViewHolder holder, int position) {
         TimezoneInfo info = clockList.get(position);
 
-        // 1. Set City Name
         holder.textCityName.setText(info.getCityName());
 
-        // 2. Calculate and Set Time (uses current time and saved format preference)
         String timePattern = TimeFormatPreference.getHourFormatPattern(context);
         SimpleDateFormat timeFormat = new SimpleDateFormat(timePattern + " a", Locale.getDefault());
         TimeZone cityTimeZone = TimeZone.getTimeZone(info.getTimezoneId());
         timeFormat.setTimeZone(cityTimeZone);
         holder.textCityTime.setText(timeFormat.format(new Date()));
 
-        // 3. Set Time Difference (uses the pre-calculated value from the model)
         String difference = formatTimeDifference(info.getDifferenceMinutes());
         holder.textTimeDifference.setText(difference);
 
-        // 4. Set Delete Listener
-        holder.iconDelete.setOnClickListener(v -> deleteListener.onDeleteClicked(position));
+        // FIX: Use getAdapterPosition() to get the correct, current position
+        holder.iconDelete.setOnClickListener(v -> {
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                deleteListener.onDeleteClicked(currentPosition);
+            }
+        });
     }
 
     @Override
@@ -112,11 +114,10 @@ public class WorldClockAdapter extends RecyclerView.Adapter<WorldClockAdapter.Cl
             timePart.append(minutes).append(" min");
         }
 
-        // Simple day difference check (if time difference crosses 12 hours, assume day change for simplicity)
         String dayText = "Today";
-        if (differenceMins > 720) { // More than 12 hours ahead
+        if (differenceMins > 720) {
             dayText = "Tomorrow";
-        } else if (differenceMins < -720) { // More than 12 hours behind
+        } else if (differenceMins < -720) {
             dayText = "Yesterday";
         }
 

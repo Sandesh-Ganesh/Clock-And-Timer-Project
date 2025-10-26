@@ -42,11 +42,14 @@
 
             <Button
                 android:id="@+id/button_no"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:strokeColor="@color/primary_blue"
                 android:text="@string/no"
-                android:textColor="@color/blue_500" />
+                android:textColor="@color/blue_500"
+                app:cornerRadius="8dp"
+                />
 
             <Button
                 android:id="@+id/button_yes"
@@ -56,7 +59,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/yes"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/red_500"/>
+                app:backgroundTint="@color/primary_blue"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

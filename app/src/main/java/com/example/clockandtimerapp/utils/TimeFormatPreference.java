@@ -26,4 +26,10 @@ public class TimeFormatPreference {
         // Return "HH:mm" for 24hr or "h:mm" for 12hr
         return is24HourFormat(context) ? "HH:mm" : "h:mm";
     }
+
+    public static void resetToDefault(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().remove(KEY_TIME_FORMAT_24H).apply(); // Removes custom setting
+    }
+
 }

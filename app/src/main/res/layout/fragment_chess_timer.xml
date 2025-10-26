@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/dark_background">
 
     <!-- ========== TOP PLAYER PANEL (mirrored) ========== -->
     <FrameLayout
@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="#E6E6E6"
+        android:background="@color/surface_secondary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/centerControls"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Player 1"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="monospace"
                 android:text="03:00"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:textSize="64sp"
                 android:textStyle="bold" />
 
@@ -84,15 +84,15 @@
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Adjust Top"
-                    app:srcCompat="@drawable/ic_sliders"
-                    app:tint="#333333" />
+                    app:srcCompat="@drawable/ic_slider"
+                    app:tint="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvTopPreset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:textColor="#333333"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:text="@string/default_time_placeholder" />
 
@@ -104,7 +104,6 @@
 
     <!-- ========== CENTER CONTROLS ========== -->
 
-    <!-- ========== BOTTOM PLAYER PANEL ========== -->
     <LinearLayout
         android:id="@+id/centerControls"
         android:layout_width="0dp"
@@ -116,7 +115,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/panelTop">
+        app:layout_constraintTop_toBottomOf="@id/panelTop"
+        >
 
         <!-- Reset -->
         <ImageButton
@@ -126,7 +126,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Reset"
             android:src="@android:drawable/ic_popup_sync"
-            app:tint="#333333" />
+            app:iconTint="@color/text_primary"
+            android:layout_marginStart="70dp"/>
 
         <!-- Pause / Play -->
         <ImageButton
@@ -138,7 +139,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Pause"
             android:src="@android:drawable/ic_media_play"
-            app:tint="#333333" />
+            app:iconTint="@color/text_primary" />
 
         <!-- Settings -->
         <ImageButton
@@ -147,8 +148,8 @@
             android:layout_height="56dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Settings"
-            android:src="@android:drawable/ic_menu_manage"
-            app:tint="#333333" />
+            android:src="@drawable/ic_settings"
+            app:iconTint="@color/text_primary" />
 
         <!-- Sound toggle -->
         <ImageButton
@@ -159,7 +160,9 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Sound Toggle"
             android:src="@android:drawable/ic_lock_silent_mode_off"
-            app:tint="#333333" />
+            app:iconTint="@color/text_primary"
+            android:visibility="invisible"
+            />
 
     </LinearLayout>
 
@@ -169,7 +172,7 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="#E6E6E6"
+        android:background="@color/surface_secondary"
         app:layout_constraintTop_toBottomOf="@id/centerControls"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -197,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:text="Moves: 0"
                     android:gravity="end"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:paddingEnd="8dp"/>
             </LinearLayout>
@@ -210,7 +213,7 @@
                 android:text="Player 2"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:layout_marginTop="6dp"/>
 
             <!-- Big timer -->
@@ -223,7 +226,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="monospace"
                 android:text="03:00"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:textSize="64sp"
                 android:textStyle="bold" />
 
@@ -241,15 +244,15 @@
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Adjust Bottom"
-                    app:srcCompat="@drawable/ic_sliders"
-                    app:tint="#333333" />
+                    app:srcCompat="@drawable/ic_slider"
+                    app:tint="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvBottomPreset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:textColor="#333333"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:text="@string/default_time_placeholder" />
 

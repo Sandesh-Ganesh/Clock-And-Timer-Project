@@ -1,6 +1,6 @@
 <resources>
     <!-- Lab 4d: Custom App Name -->
-    <string name="app_name">Clock and Timer</string>
+    <string name="app_name">Clock</string>
 
     <!-- Navigation Titles -->
     <string name="title_world_clock">World Clock</string>

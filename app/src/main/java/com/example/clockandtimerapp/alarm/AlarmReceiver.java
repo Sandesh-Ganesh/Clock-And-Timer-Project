@@ -21,18 +21,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         boolean vibrate = intent.getBooleanExtra(EXTRA_VIBRATE, false);
         String ringtone = intent.getStringExtra(EXTRA_RINGTONE);
 
-        // Start foreground service that shows notification + plays audio
-        Intent svc = new Intent(context, AlarmRingService.class)
-                .setAction(AlarmRingService.ACTION_START);
-        svc.putExtra(EXTRA_ID, id);
-        svc.putExtra(EXTRA_LABEL, label);
-        svc.putExtra(EXTRA_VIBRATE, vibrate);
-        svc.putExtra(EXTRA_RINGTONE, ringtone);
+        // --- NEW BEHAVIOR: Launch the full-screen AlarmRingActivity ---
+        Intent activityIntent = new Intent(context, AlarmRingActivity.class);
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            ContextCompat.startForegroundService(context, svc);
-        } else {
-            context.startService(svc);
-        }
+        // Pass necessary alarm data to the activity
+        activityIntent.putExtra("id", id);
+        activityIntent.putExtra("label", label);
+        activityIntent.putExtra("vibrate", vibrate);
+        activityIntent.putExtra("ringtone", ringtone);
+
+        // Flags to ensure the activity can launch from the BroadcastReceiver and over the lock screen
+        activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        context.startActivity(activityIntent);
+
     }
 }

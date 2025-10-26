@@ -134,11 +134,29 @@ public class ChessTimerFragment extends Fragment {
         lastTickTime = System.currentTimeMillis();
         handler.post(tickRunnable);
 
-        if (panelTop != null) panelTop.setOnClickListener(v -> onPlayerTap(true));
-        if (panelBottom != null) panelBottom.setOnClickListener(v -> onPlayerTap(false));
+
+
+        if (panelTop != null){
+            panelTop.setOnClickListener(v -> onPlayerTap(true));
+            panelTop.setEnabled(false);
+        }
+        if (panelBottom != null) {
+            panelBottom.setOnClickListener(v -> onPlayerTap(false));
+            panelBottom.setEnabled(false);
+        }
 
         if (btnPause != null) btnPause.setOnClickListener(v -> {
-            if (paused) resumeClock(); else pauseClock();
+            if (paused){
+                panelTop.setEnabled(true);
+                panelBottom.setEnabled(true);
+                btnSettings.setEnabled(false);
+                resumeClock();
+            } else {
+                pauseClock();
+                panelTop.setEnabled(false);
+                panelBottom.setEnabled(false);
+                btnSettings.setEnabled(true);
+            }
         });
 
         if (btnReset != null) btnReset.setOnClickListener(v -> {
@@ -246,10 +264,12 @@ public class ChessTimerFragment extends Fragment {
     }
 
     private void updatePanelColors() {
-        final int activeBg = Color.parseColor("#6CC04A");
-        final int inactiveBg = Color.parseColor("#E6E6E6");
+//        final int activeBg = Color.parseColor("#6CC04A");
+//        final int inactiveBg = Color.parseColor("#E6E6E6");
+        final int activeBg = Color.parseColor("#1976D2");
+        final int inactiveBg = Color.parseColor("#0A0A0A");
         final int activeText = Color.WHITE;
-        final int inactiveText = Color.BLACK;
+        final int inactiveText = Color.parseColor("#3A3A3C");
         final int timeoutText = Color.parseColor("#FF5C5C");
 
         if (panelTop != null) panelTop.setBackgroundColor(inactiveBg);
@@ -338,7 +358,8 @@ public class ChessTimerFragment extends Fragment {
         setupEditTextForDialog(etIncMin);
         setupEditTextForDialog(etIncSec);
 
-        final AlertDialog dialog = new AlertDialog.Builder(requireContext()).setView(v).create(); // CHANGE: Use requireContext()
+        // Use a theme that is essentially invisible or transparent
+        final AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.AlertDialogDarkTheme).setView(v).create(); // CHANGE: Use requireContext()
 
         if (btnCancel != null) btnCancel.setOnClickListener(x -> {
             if (etTimeMin != null) closeKeyboard(etTimeMin);
@@ -379,7 +400,7 @@ public class ChessTimerFragment extends Fragment {
 
         dialog.setCancelable(true);
         dialog.show();
-        if (dialog.getWindow() != null) dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.92),
+        if (dialog.getWindow() != null) dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels ),
                 WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
@@ -461,7 +482,7 @@ public class ChessTimerFragment extends Fragment {
         dialog.show();
         if (dialog.getWindow() != null)
             dialog.getWindow().setLayout(
-                    (int) (getResources().getDisplayMetrics().widthPixels * 0.9),
+                    (int) (getResources().getDisplayMetrics().widthPixels * .95),
                     WindowManager.LayoutParams.WRAP_CONTENT
             );
     }

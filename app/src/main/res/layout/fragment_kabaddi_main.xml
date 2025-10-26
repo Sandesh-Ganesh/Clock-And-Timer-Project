@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:text="Timeouts Left: 2"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/tv_team_a_msg"
                         android:layout_width="wrap_content"
@@ -215,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:text="Timeouts Left: 2"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/tv_team_b_msg"
                         android:layout_width="wrap_content"

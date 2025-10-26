@@ -3,9 +3,13 @@ package com.example.clockandtimerapp;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable; // ADDED
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Gravity;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -28,6 +32,9 @@ public class TimeoutDecisionDialog extends DialogFragment {
     private final String teamBName;
     private final int teamATimeoutsLeft;
     private final int teamBTimeoutsLeft;
+
+    // State variable to track the selection
+    private Boolean isTeamASelected = null;
 
     // UI Elements
     private MaterialButton rbTeamA, rbTeamB;
@@ -72,15 +79,19 @@ public class TimeoutDecisionDialog extends DialogFragment {
         int colorPrimaryBlue = ContextCompat.getColor(requireContext(), R.color.primary_blue);
         int colorWhite = ContextCompat.getColor(requireContext(), R.color.white);
 
-        // Initial States for buttons (Outlined/Unselected Look)
-        rbTeamA.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+        // --- Setup Initial/Unselected Styles ---
+
+        // Unselected style: Transparent background, Blue text/stroke
+        ColorStateList primaryBlueTint = ColorStateList.valueOf(colorPrimaryBlue);
+        ColorStateList transparentTint = ColorStateList.valueOf(Color.TRANSPARENT);
+
+        rbTeamA.setBackgroundTintList(transparentTint);
         rbTeamA.setTextColor(colorPrimaryBlue);
-        rbTeamA.setStrokeColor(ColorStateList.valueOf(colorPrimaryBlue));
+        rbTeamA.setStrokeColor(primaryBlueTint);
 
-        rbTeamB.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+        rbTeamB.setBackgroundTintList(transparentTint);
         rbTeamB.setTextColor(colorPrimaryBlue);
-        rbTeamB.setStrokeColor(ColorStateList.valueOf(colorPrimaryBlue));
-
+        rbTeamB.setStrokeColor(primaryBlueTint);
 
         // Handle Team A availability
         if (teamATimeoutsLeft <= 0) {
@@ -98,24 +109,30 @@ public class TimeoutDecisionDialog extends DialogFragment {
             tvTimeoutB.setTextColor(colorDisabled);
         }
 
+        // Start Timeout button is disabled until a valid choice is made
+        btnStartTimeout.setEnabled(false);
+
         // Selection Logic for button-based selection
         View.OnClickListener selectionListener = v -> {
-            boolean isTeamASelected = v.getId() == R.id.rb_team_a;
+            boolean clickedTeamA = v.getId() == R.id.rb_team_a;
 
-            // Reset styles for both buttons
-            rbTeamA.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            // 1. Reset styles for both buttons (Unselected state)
+            rbTeamA.setBackgroundTintList(transparentTint);
             rbTeamA.setTextColor(colorPrimaryBlue);
-            rbTeamB.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            rbTeamB.setBackgroundTintList(transparentTint);
             rbTeamB.setTextColor(colorPrimaryBlue);
 
-            // Style the selected button (Solid Primary Blue background)
-            MaterialButton selectedButton = isTeamASelected ? rbTeamA : rbTeamB;
+            // 2. Style the selected button (Selected state: White background, Blue text)
+            MaterialButton selectedButton = clickedTeamA ? rbTeamA : rbTeamB;
 
-            selectedButton.setBackgroundTintList(ColorStateList.valueOf(colorPrimaryBlue));
-            selectedButton.setTextColor(colorWhite);
+            selectedButton.setBackgroundTintList(ColorStateList.valueOf(colorWhite));
+            selectedButton.setTextColor(colorPrimaryBlue);
 
-            // Enable Start Timeout button if a valid selection was made
-            boolean hasTimeouts = (isTeamASelected && teamATimeoutsLeft > 0) || (!isTeamASelected && teamBTimeoutsLeft > 0);
+            // 3. Update the tracked state
+            isTeamASelected = clickedTeamA;
+
+            // 4. Enable Start Timeout button if a valid selection was made
+            boolean hasTimeouts = (clickedTeamA && teamATimeoutsLeft > 0) || (!clickedTeamA && teamBTimeoutsLeft > 0);
             btnStartTimeout.setEnabled(hasTimeouts);
         };
 
@@ -124,23 +141,18 @@ public class TimeoutDecisionDialog extends DialogFragment {
 
         // Start Timeout Action
         btnStartTimeout.setOnClickListener(v -> {
-            // Determine selection by checking which button has a solid background tint
-            ColorStateList tintA = rbTeamA.getBackgroundTintList();
-            boolean isTeamASelected = tintA != null && tintA.getDefaultColor() == colorPrimaryBlue;
-
-            ColorStateList tintB = rbTeamB.getBackgroundTintList();
-            boolean isTeamBSelected = tintB != null && tintB.getDefaultColor() == colorPrimaryBlue;
-
-
-            if (listener != null) {
-                if (isTeamASelected) {
+            // Determine selection using the tracked state variable
+            if (isTeamASelected == null) {
+                Toast.makeText(requireContext(), "Please select a team.", Toast.LENGTH_SHORT).show();
+            } else if (isTeamASelected) {
+                if (teamATimeoutsLeft > 0 && listener != null) {
                     listener.onTimeoutDecision(true);
                     dismiss();
-                } else if (isTeamBSelected) {
+                }
+            } else { // isTeamBSelected
+                if (teamBTimeoutsLeft > 0 && listener != null) {
                     listener.onTimeoutDecision(false);
                     dismiss();
-                } else {
-                    Toast.makeText(requireContext(), "Please select a team.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -152,6 +164,20 @@ public class TimeoutDecisionDialog extends DialogFragment {
 
         setCancelable(false);
 
-        return builder.create();
+        // Final creation of the dialog
+        AlertDialog dialog = builder.create();
+
+        // CRITICAL FIX: Robust Centering Logic
+        Window window = dialog.getWindow();
+        if (window != null) {
+            // 1. Remove default background/padding inherited from theme
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            // 2. Set the dimensions and gravity
+            window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.CENTER);
+        }
+
+        return dialog;
     }
 }

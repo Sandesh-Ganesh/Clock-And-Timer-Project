@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -259,9 +260,10 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         }
 
         isTeamARaiding = isTeamA;
-        isRaidRunning = true;
+        isRaidRunning = true; // Set raid to running
 
-        updateRaidMessage(isTeamARaiding, false);
+        // FIX: Update call to use new function signature
+        updateRaidMessage(isTeamARaiding);
 
         updateTeamPanels();
         updateButtonStates();
@@ -292,7 +294,8 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
                 isTeamARaiding = !isTeamARaiding;
                 Toast.makeText(getContext(), "Raid Time Out! Change of possession.", Toast.LENGTH_SHORT).show();
 
-                updateRaidMessage(isTeamARaiding, true);
+                // FIX: Update call to use new function signature
+                updateRaidMessage(isTeamARaiding);
                 updateTeamPanels();
             }
         }.start();
@@ -302,7 +305,7 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         if (raidTimer != null) {
             raidTimer.cancel();
         }
-        isRaidRunning = false;
+        isRaidRunning = false; // Set raid to not running
         raidTimeRemaining = raidTimeDefault;
         updateRaidTimer();
         updateButtonStates();
@@ -313,9 +316,8 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         }
 
         isTeamARaiding = !raidingTeam;
-        Toast.makeText(getContext(), "Raid finished! Next raider: " + (isTeamARaiding ? teamAName : teamBName), Toast.LENGTH_SHORT).show();
-
-        updateRaidMessage(isTeamARaiding, true);
+        // FIX: Update call to use new function signature
+        updateRaidMessage(isTeamARaiding);
         updateTeamPanels();
     }
 
@@ -332,10 +334,12 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         }
 
         if (isMatchRunning && !isMatchPaused && matchTimeRemaining > 0) {
-            updateRaidMessage(isTeamARaiding, true);
+            // FIX: Update call to use new function signature
+            updateRaidMessage(isTeamARaiding);
         } else {
-            updateRaidMessage(true, false);
-            updateRaidMessage(false, false);
+            // FIX: Clear messages by updating with state that hides them
+            updateRaidMessage(true);
+            updateRaidMessage(false);
         }
         updateTeamPanels();
     }
@@ -364,8 +368,10 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
 
             updateButtonStates();
             updateTeamPanels();
-            updateRaidMessage(true, false);
-            updateRaidMessage(false, false);
+
+            // FIX: Clear messages
+            updateRaidMessage(true);
+            updateRaidMessage(false);
 
             Toast.makeText(getContext(), "Match Paused", Toast.LENGTH_SHORT).show();
 
@@ -384,7 +390,7 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         if (tvHalfIndicator.getText().equals("Halftime Break")) {
             tvHalfIndicator.setText("Second Half");
             isFirstHalf = false;
-            isTeamARaiding = !isTeamAStartedFirstHalf;
+            // The next raider is decided in onRaidDecision
         }
 
         // 1. UI updates: Change icon back to PAUSE
@@ -400,7 +406,8 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         updateRaidTimer();
 
         // 4. Set UI for the next raid
-        updateRaidMessage(isTeamARaiding, true);
+        // FIX: Update call to use new function signature
+        updateRaidMessage(isTeamARaiding);
         isRaidRunning = false; // Next click will START the raid
 
         updateButtonStates();
@@ -486,8 +493,9 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         panelTeamA.setClickable(false);
         panelTeamB.setClickable(false);
 
-        updateRaidMessage(true, false);
-        updateRaidMessage(false, false);
+        // FIX: Clear raid messages during timeout
+        updateRaidMessage(true);
+        updateRaidMessage(false);
 
         updateTeamPanels();
 
@@ -537,7 +545,8 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         panelTeamB.setClickable(true);
 
         // Set UI for the next raid (using the possession state from before the timeout)
-        updateRaidMessage(isTeamARaiding, true);
+        // FIX: Update call to use new function signature
+        updateRaidMessage(isTeamARaiding);
 
         // Update states: Crucial: Raid is NOT running, next click starts it.
         isMatchPaused = false;
@@ -596,16 +605,33 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
         }
     }
 
-    private void updateRaidMessage(boolean isTeamA, boolean isVisible) {
+    // ⭐ REVISED FUNCTION FOR RAID MESSAGE TOGGLE ⭐
+    private void updateRaidMessage(boolean isTeamA) {
         tvTeamAMsg.setVisibility(View.INVISIBLE);
         tvTeamBMsg.setVisibility(View.INVISIBLE);
 
-        if (isVisible) {
+        // Only display messages if the match is running (or ready to start/resume)
+        if (isMatchRunning && !isMatchPaused && !isTimeoutActive) {
+            // Determine the message based on whether the raid is currently running
+            String message;
+            if (isRaidRunning) {
+                message = "Tap to STOP Raid";
+            } else {
+                message = "Tap to START Raid";
+            }
+
+            // Only show the message for the team that currently has possession
             TextView msgView = isTeamA ? tvTeamAMsg : tvTeamBMsg;
-            msgView.setText("Click to Start");
-            msgView.setVisibility(View.VISIBLE);
+
+            // If the current team (isTeamA) is the designated raider (isTeamARaiding), show the message
+            if (isTeamA == isTeamARaiding) {
+                msgView.setText(message);
+                msgView.setVisibility(View.VISIBLE);
+            }
         }
+        // If the game is paused or stopped, both messages remain invisible
     }
+    // ⭐ END REVISED FUNCTION ⭐
 
     private void updateTeamPanels() {
         tvTeamAName.setBackgroundColor(colorInactive);
@@ -670,14 +696,18 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
 
         updateButtonStates();
         updateTeamPanels();
-        updateRaidMessage(true, false);
-        updateRaidMessage(false, false);
+
+        // FIX: Clear messages
+        updateRaidMessage(true);
+        updateRaidMessage(false);
 
         Toast.makeText(getContext(), "HALFTIME! Tap START button to begin Second Half.", Toast.LENGTH_LONG).show();
         setBottomNavVisibility(View.VISIBLE);
     }
 
     // --- Utility Methods ---
+
+    // Inside KabaddiMainFragment.java
 
     private void updateUI() {
         updateMatchTimer();
@@ -689,7 +719,17 @@ public class KabaddiMainFragment extends Fragment implements NextRaidDialog.Next
             tvFullTime.setText("Full Time : "+String.format(Locale.getDefault(), "%d:%02d", matchTimeMinutes, 0));
         }
 
-        updateRaidMessage(isTeamAFirst, true);
+        // Hide both messages first
+        tvTeamAMsg.setVisibility(View.INVISIBLE);
+        tvTeamBMsg.setVisibility(View.INVISIBLE);
+
+        // Get the message view for the starting team
+        TextView initialMsgView = isTeamAFirst ? tvTeamAMsg : tvTeamBMsg;
+
+        // Set and show the message
+        initialMsgView.setText("Tap to START Raid");
+        initialMsgView.setVisibility(View.VISIBLE);
+
         updateTimeoutUI();
 
         flOverlayContainer.setVisibility(View.GONE);

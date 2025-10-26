@@ -26,15 +26,14 @@ import java.util.Locale;
 
 public class StopwatchService extends Service {
 
-    // --- Actions/Extras (Unified Constants) ---
+    // --- Actions/Extras ---
     public static final String BASE_ACTION = "com.example.clockandtimerapp.stopwatch";
     public static final String ACTION_START = BASE_ACTION + ".ACTION_START";
     public static final String ACTION_PAUSE = BASE_ACTION + ".ACTION_PAUSE";
     public static final String ACTION_RESET = BASE_ACTION + ".ACTION_RESET";
     public static final String ACTION_LAP = BASE_ACTION + ".ACTION_LAP";
     public static final String ACTION_UPDATE_BROADCAST = BASE_ACTION + ".ACTION_UPDATE";
-    public static final String ACTION_HIDE_NOTIFICATION = BASE_ACTION + ".ACTION_HIDE_NOTIFICATION";
-    public static final String ACTION_SHOW_NOTIFICATION = BASE_ACTION + ".ACTION_SHOW_NOTIFICATION";
+    public static final String ACTION_REQUEST_STATE = BASE_ACTION + ".ACTION_REQUEST_STATE"; // NEW ACTION
 
     public static final String EXTRA_ELAPSED = "elapsedMs";
     public static final String EXTRA_RUNNING = "running";
@@ -48,7 +47,6 @@ public class StopwatchService extends Service {
     private boolean running = false;
     private long startRealtime = 0L;
     private long accumulatedMs = 0L;
-    private long lastLapTotalMs = 0L;
     private final List<Long> lapsTotals = new ArrayList<>();
 
     private final Handler handler = new Handler();
@@ -57,12 +55,24 @@ public class StopwatchService extends Service {
         public void run() {
             if (running) {
                 broadcastUpdate();
-                // Update notification less often to save battery
-                updateNotification();
-                handler.postDelayed(this, 10); // FASTER TICKER (10ms)
+                handler.postDelayed(this, 10);
             }
         }
     };
+
+    private final Runnable notificationUpdater = new Runnable() {
+        @Override
+        public void run() {
+            if (running) {
+                Notification n = buildNotification(formatTime(getTotalElapsedMs()), true);
+                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null) nm.notify(NOTIF_ID, n);
+
+                handler.postDelayed(this, 1000);
+            }
+        }
+    };
+
 
     @Override
     public void onCreate() {
@@ -73,62 +83,65 @@ public class StopwatchService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // --- CRITICAL FIX: Ensure startForeground is called immediately if running ---
         String action = (intent != null) ? intent.getAction() : null;
 
-        boolean needsForeground = running || ACTION_START.equals(action);
+        // CRITICAL FIX 1: IMMEDIATE startForeground()
+        if (ACTION_START.equals(action) || running) {
+            boolean isRunningForNotif = running || ACTION_START.equals(action);
+            startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), isRunningForNotif));
 
-        if (needsForeground && !ACTION_PAUSE.equals(action) && !ACTION_RESET.equals(action) && !ACTION_HIDE_NOTIFICATION.equals(action)) {
-            // Call startForeground with initial notification (state will be updated shortly)
-            startForeground(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running || ACTION_START.equals(action)));
+            if (isRunningForNotif && !running) {
+                handler.post(notificationUpdater);
+            }
         }
 
-        // --- Process Intent Action ---
+        // Process Intent Action
         if (action != null) {
             switch (action) {
                 case ACTION_START:
                     startStopwatch();
-                    // startForeground was called above
                     break;
+
                 case ACTION_PAUSE:
                     pauseStopwatch();
-                    stopForeground(false); // Keep notification visible on pause
+                    stopForeground(false);
+                    handler.removeCallbacks(notificationUpdater);
                     break;
+
                 case ACTION_RESET:
                     resetStopwatch();
-                    stopForeground(true); // Remove notification on reset
+                    stopForeground(true);
                     stopSelf();
-                    break;
+                    handler.removeCallbacks(notificationUpdater);
+                    return START_NOT_STICKY;
+
                 case ACTION_LAP:
                     recordLap();
+                    NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (nm != null && running) nm.notify(NOTIF_ID, buildNotification(formatTime(getTotalElapsedMs()), running));
                     break;
-                case ACTION_HIDE_NOTIFICATION:
-                    stopForeground(true);
-                    break;
-                case ACTION_SHOW_NOTIFICATION:
-                    // startForeground was called outside the switch for safety
+
+                case ACTION_REQUEST_STATE:
+                    // FIX: Fragment requested state, send it immediately.
+                    broadcastUpdate();
                     break;
             }
         }
 
-        // Final safety check: if reset was NOT called, and the intent was null,
-        // and we were already running, ensure ticker is running.
-        if (running && action == null) {
-            handler.post(ticker);
+        if (running) {
+            // Ticker is handled by startStopwatch()
         }
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
-    // --- Timer Logic (startStopwatch, pauseStopwatch, etc.) ---
+    // --- Timer Logic (Unchanged) ---
     private void startStopwatch() {
         if (!running) {
             startRealtime = SystemClock.elapsedRealtime();
             running = true;
             handler.post(ticker);
             broadcastUpdate();
-            updateNotification();
-            Log.d(TAG, "started");
         }
     }
 
@@ -138,8 +151,6 @@ public class StopwatchService extends Service {
             running = false;
             handler.removeCallbacks(ticker);
             broadcastUpdate();
-            updateNotification();
-            Log.d(TAG, "paused");
         }
     }
 
@@ -148,20 +159,14 @@ public class StopwatchService extends Service {
         handler.removeCallbacks(ticker);
         accumulatedMs = 0L;
         startRealtime = 0L;
-        lastLapTotalMs = 0L;
         lapsTotals.clear();
         broadcastUpdate();
-        updateNotification();
-        Log.d(TAG, "reset");
     }
 
     private void recordLap() {
         long totalNow = getTotalElapsedMs();
-        lastLapTotalMs = totalNow;
-        lapsTotals.add(0, totalNow); // newest-first
+        lapsTotals.add(0, totalNow);
         broadcastUpdate();
-        updateNotification();
-        Log.d(TAG, "lap");
     }
 
     private long getTotalElapsedMs() {
@@ -171,8 +176,6 @@ public class StopwatchService extends Service {
             return accumulatedMs;
         }
     }
-    // --- End Timer Logic ---
-
 
     // --- Broadcast/Notification Logic ---
     private void broadcastUpdate() {
@@ -185,88 +188,44 @@ public class StopwatchService extends Service {
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 
-    private void updateNotification() {
-        handler.removeCallbacks(notificationUpdater);
-        handler.postDelayed(notificationUpdater, 1000);
-    }
-
-    private final Runnable notificationUpdater = new Runnable() {
-        @Override
-        public void run() {
-            // Check if we are still running before notifying again
-            if (running) {
-                Notification n = buildNotification(formatTime(getTotalElapsedMs()), running);
-                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (nm != null) nm.notify(NOTIF_ID, n);
-
-                // Re-schedule for next second
-                handler.postDelayed(this, 1000);
-            }
-        }
-    };
-
-
-    private Notification buildNotification(String timeText, boolean running) {
-        // NOTE: MainActivity class needs to be defined in com.example.clockandtimerapp
-        Intent openApp = new Intent(this, com.example.clockandtimerapp.MainActivity.class);
-        openApp.putExtra(EXTRA_FRAGMENT_TO_LOAD, "Stopwatch");
+    private Notification buildNotification(String timeText, boolean isRunning) {
+        Intent openApp = new Intent(this, MainActivity.class);
         openApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        openApp.putExtra(EXTRA_FRAGMENT_TO_LOAD, "Stopwatch");
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openApp, pendingFlags());
 
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Stopwatch Running")
+                .setContentTitle("Stopwatch Active")
                 .setContentText("Elapsed: " + timeText)
-                .setSmallIcon(R.drawable.ic_play_24)
-                .setColor(getColorCompat(R.color.sw_accent))
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(contentIntent)
-                .setOngoing(running)
-                .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setOngoing(isRunning)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        // Toggle action
         Intent toggleIntent = new Intent(this, StopwatchService.class);
-        toggleIntent.setAction(running ? ACTION_PAUSE : ACTION_START);
+        toggleIntent.setAction(isRunning ? ACTION_PAUSE : ACTION_START);
         PendingIntent togglePi = PendingIntent.getService(this, 1, toggleIntent, pendingFlags());
-        b.addAction(running ? R.drawable.ic_pause_24 : R.drawable.ic_play_24,
-                running ? "Pause" : "Start", togglePi);
+        b.addAction(isRunning ? R.drawable.custom_pause_icon : R.drawable.custom_play_icon,
+                isRunning ? "Pause" : "Start", togglePi);
 
-        // Lap action (only if running)
-        if (running) {
-            Intent lapIntent = new Intent(this, StopwatchService.class);
-            lapIntent.setAction(ACTION_LAP);
-            PendingIntent lapPi = PendingIntent.getService(this, 2, lapIntent, pendingFlags());
-            b.addAction(R.drawable.ic_flag_24, "Lap", lapPi);
-        }
-
-        // Reset action (always available)
         Intent resetIntent = new Intent(this, StopwatchService.class);
         resetIntent.setAction(ACTION_RESET);
         PendingIntent resetPi = PendingIntent.getService(this, 3, resetIntent, pendingFlags());
-        b.addAction(R.drawable.ic_reset_24, "Reset", resetPi);
+        b.addAction(R.drawable.custom_reset_icon, "Reset", resetPi);
 
         return b.build();
     }
 
-    // --- Helper Methods ---
     private int pendingFlags() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
-        } else {
-            return PendingIntent.FLAG_UPDATE_CURRENT;
-        }
-    }
-
-    private int getColorCompat(int colorRes) {
-        // Use standard getColor method which is safer across SDKs
-        return getResources().getColor(colorRes, null);
+        return PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel chan = new NotificationChannel(
                     CHANNEL_ID, "Stopwatch", NotificationManager.IMPORTANCE_LOW);
-            chan.setDescription("Stopwatch running");
+            chan.setDescription("Stopwatch running in background");
             NotificationManager nm = getSystemService(NotificationManager.class);
             if (nm != null) nm.createNotificationChannel(chan);
         }
@@ -279,16 +238,20 @@ public class StopwatchService extends Service {
     }
 
     private static String formatTime(long ms) {
-        long totalSeconds = ms / 1000;
-        long minutes = totalSeconds / 60;
-        long seconds = totalSeconds % 60;
+        long hours = ms / 3600000;
+        long minutes = (ms % 3600000) / 60000;
+        long seconds = (ms % 60000) / 1000;
         long hundredths = (ms % 1000) / 10;
-        return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
+        if (hours > 0) {
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", hours, minutes, seconds, hundredths);
+        } else {
+            return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
+        }
     }
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
-        handler.removeCallbacksAndMessages(null); // Cleanup all pending runnables
     }
 }

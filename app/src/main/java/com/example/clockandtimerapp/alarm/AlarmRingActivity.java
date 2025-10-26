@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper; // ADDED: Import Looper
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.WindowManager;
@@ -29,6 +30,9 @@ public class AlarmRingActivity extends AppCompatActivity {
     private boolean vibrate;
 
     private Vibrator vibrator;
+
+    // ADDED: Handler for delayed execution
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,19 +68,28 @@ public class AlarmRingActivity extends AppCompatActivity {
         // Stop any existing sound just in case
         AlarmPlayer.stop();
 
-        // ✅ Either vibrate OR play sound
-        if (vibrate) {
-            // Optional debug message (you can remove this)
-            Toast.makeText(this, "Vibrate ON: Only vibration will run", Toast.LENGTH_SHORT).show();
+        // =====================================================================
+        // CRITICAL FIX: Use Handler to delay media start until UI is ready
+        // =====================================================================
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (vibrate) {
+                    Toast.makeText(AlarmRingActivity.this, "Vibrate ON: Vibration will run", Toast.LENGTH_SHORT).show();
+                    startVibration();
+                } else {
+                    Toast.makeText(AlarmRingActivity.this, "Vibrate OFF: Playing sound", Toast.LENGTH_SHORT).show();
+                    AlarmPlayer.start(AlarmRingActivity.this, ringtone, true); // play sound
+                }
+            }
+        }, 500); // 500ms delay should be sufficient to let the window open
+        // =====================================================================
 
-            // Start vibration slightly delayed (some devices need a small delay)
-            new Handler().postDelayed(this::startVibration, 300);
-        } else {
-            Toast.makeText(this, "Vibrate OFF: Playing sound", Toast.LENGTH_SHORT).show();
-            AlarmPlayer.start(this, ringtone, true); // play sound
-        }
 
         btnDismiss.setOnClickListener(v -> {
+            // Use the handler to clean up any pending start actions
+            handler.removeCallbacksAndMessages(null);
+
             dismissNotification(this, alarmId);
             stopVibration();
             AlarmPlayer.stop();
@@ -84,6 +97,9 @@ public class AlarmRingActivity extends AppCompatActivity {
         });
 
         btnSnooze.setOnClickListener(v -> {
+            // Use the handler to clean up any pending start actions
+            handler.removeCallbacksAndMessages(null);
+
             // Schedule same alarm 5 min later
             Calendar c = Calendar.getInstance();
             c.add(Calendar.MINUTE, 5);
@@ -109,9 +125,13 @@ public class AlarmRingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // Ensure all pending handler tasks are removed on destroy
+        handler.removeCallbacksAndMessages(null);
         stopVibration();
         AlarmPlayer.stop();
     }
+
+    // ... (startVibration, stopVibration, dismissNotification methods remain the same)
 
     /**
      * Start vibration only mode.
@@ -142,9 +162,6 @@ public class AlarmRingActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Stop vibration if active.
-     */
     private void stopVibration() {
         if (vibrator != null) {
             try {
@@ -154,10 +171,9 @@ public class AlarmRingActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Dismisses the system notification.
-     */
     private void dismissNotification(Context ctx, int id) {
+        // Since we are no longer using AlarmRingService/Notifications,
+        // this is mostly a legacy cleanup function.
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.cancel(id);
     }

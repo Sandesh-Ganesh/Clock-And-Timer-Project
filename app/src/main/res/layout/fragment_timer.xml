@@ -1,197 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark"  tools:context=".timer.TimerFragment">
+    android:background="@color/background_dark"
+    tools:context=".timer.TimerFragment">
 
+    <!-- Timer Display -->
     <TextView
         android:id="@+id/textViewCurrentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:text="00:00:00"
         android:textColor="@color/text_primary"
-        android:textSize="64sp"
+        android:textSize="56sp"
         android:fontFamily="monospace"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/textViewHrLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hr"
-        android:textColor="@color/text_secondary" android:textSize="18sp"
-        android:layout_marginStart="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/numberPickerMin"
-        app:layout_constraintStart_toEndOf="@+id/numberPickerHr"
-        app:layout_constraintTop_toTopOf="@+id/numberPickerMin" />
-
-    <NumberPicker
-        android:id="@+id/numberPickerHr"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="48dp" android:theme="@style/NumberPickerTextColor" app:layout_constraintEnd_toStartOf="@+id/numberPickerMin"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/textViewMinLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Min"
-        android:textColor="@color/text_secondary" android:textSize="18sp"
-        android:layout_marginStart="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/numberPickerSec"
-        app:layout_constraintStart_toEndOf="@+id/numberPickerMin"
-        app:layout_constraintTop_toTopOf="@+id/numberPickerSec" />
-
-    <NumberPicker
-        android:id="@+id/numberPickerMin"
+    <!-- NumberPickers Container -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timePickerContainer"
         android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="48dp" android:theme="@style/NumberPickerTextColor"
-        app:layout_constraintEnd_toStartOf="@+id/numberPickerSec"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/numberPickerHr"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
-
-    <TextView
-        android:id="@+id/textViewSecLabel"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sec"
-        android:textColor="@color/text_secondary" android:textSize="18sp"
-        android:layout_marginStart="0dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/numberPickerSec"
-        app:layout_constraintStart_toEndOf="@+id/numberPickerSec"
-        app:layout_constraintTop_toTopOf="@+id/numberPickerSec" />
-
-    <NumberPicker
-        android:id="@+id/numberPickerSec"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="48dp" android:layout_marginEnd="48dp"
-        android:theme="@style/NumberPickerTextColor"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewCurrentTime"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/numberPickerMin"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTime" />
+        app:layout_constraintWidth_percent="0.9">
 
+        <NumberPicker
+            android:id="@+id/numberPickerHr"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:theme="@style/NumberPickerTextColor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textSeparator1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+        <TextView
+            android:id="@+id/textSeparator1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hr"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp"
+            app:layout_constraintStart_toEndOf="@id/numberPickerHr"
+            app:layout_constraintEnd_toStartOf="@+id/numberPickerMin"
+            app:layout_constraintTop_toTopOf="@id/numberPickerHr"
+            app:layout_constraintBottom_toBottomOf="@id/numberPickerHr"/>
+
+        <NumberPicker
+            android:id="@+id/numberPickerMin"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:theme="@style/NumberPickerTextColor"
+            app:layout_constraintStart_toEndOf="@id/textSeparator1"
+            app:layout_constraintEnd_toStartOf="@+id/textSeparator2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/textSeparator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp"
+            app:layout_constraintStart_toEndOf="@id/numberPickerMin"
+            app:layout_constraintEnd_toStartOf="@+id/numberPickerSec"
+            app:layout_constraintTop_toTopOf="@id/numberPickerMin"
+            app:layout_constraintBottom_toBottomOf="@id/numberPickerMin"/>
+
+        <NumberPicker
+            android:id="@+id/numberPickerSec"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:theme="@style/NumberPickerTextColor"
+            app:layout_constraintStart_toEndOf="@id/textSeparator2"
+            app:layout_constraintEnd_toStartOf="@+id/textSeparator3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/textSeparator3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sec"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:paddingStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/numberPickerSec"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/numberPickerSec"
+            app:layout_constraintBottom_toBottomOf="@id/numberPickerSec"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Preset Buttons -->
     <Button
         android:id="@+id/button1Min"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/surface_secondary" android:text="1:00"
-        android:textColor="@color/text_primary" android:textSize="18sp"
+        android:backgroundTint="@color/surface_secondary"
+        android:text="1:00"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         app:cornerRadius="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/button5Min"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+        app:layout_constraintEnd_toStartOf="@+id/button5Min"
+        app:layout_constraintTop_toBottomOf="@id/timePickerContainer"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
     <Button
         android:id="@+id/button5Min"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/surface_secondary" android:text="5:00"
-        android:textColor="@color/text_primary" android:textSize="18sp"
+        android:backgroundTint="@color/surface_secondary"
+        android:text="5:00"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         app:cornerRadius="8dp"
+        app:layout_constraintStart_toEndOf="@id/button1Min"
         app:layout_constraintEnd_toStartOf="@+id/button15Min"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button1Min"
-        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+        app:layout_constraintTop_toBottomOf="@id/timePickerContainer"/>
 
     <Button
         android:id="@+id/button15Min"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="24dp"
-        android:backgroundTint="@color/surface_secondary" android:text="15:00"
-        android:textColor="@color/text_primary" android:textSize="18sp"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="@color/surface_secondary"
+        android:text="15:00"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         app:cornerRadius="8dp"
+        app:layout_constraintStart_toEndOf="@id/button5Min"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button5Min"
-        app:layout_constraintTop_toBottomOf="@+id/numberPickerMin" />
+        app:layout_constraintTop_toBottomOf="@id/timePickerContainer"/>
 
+    <!-- Pomodoro Button moved below preset buttons -->
     <Button
         android:id="@+id/buttonPomodoro"
         style="@style/Widget.Material3.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/surface_secondary" android:paddingStart="48dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="48dp"
-        android:paddingBottom="16dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/surface_secondary"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="POMODORO"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button1Min"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button5Min" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- FABs -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabPlayPause"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
         android:clickable="true"
         android:focusable="true"
-
-        app:tint="@color/white"
+        android:backgroundTint="@color/primary_blue"
+        app:tint="@color/sw_text_primary"
         app:srcCompat="@drawable/custom_pause_icon"
-        app:fabCustomSize="100dp"
-        app:maxImageSize="64dp"
+        app:fabCustomSize="64dp"
+        app:maxImageSize="36dp"
         app:borderWidth="0dp"
-
-        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"  app:layout_constraintTop_toBottomOf="@+id/buttonPomodoro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.4"
+        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"
+        app:layout_constraintTop_toBottomOf="@id/buttonPomodoro"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fabReset"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabReset"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
         android:clickable="true"
         android:focusable="true"
         android:backgroundTint="@color/surface_dark"
         app:tint="@color/text_primary"
         app:srcCompat="@drawable/custom_reset_icon"
-        app:fabCustomSize="100dp"
-        app:maxImageSize="64dp"
+        app:fabCustomSize="64dp"
+        app:maxImageSize="36dp"
         app:borderWidth="0dp"
-
-        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"  app:layout_constraintTop_toTopOf="@+id/fabPlayPause"
-        app:layout_constraintBottom_toBottomOf="@+id/fabPlayPause"
-        app:layout_constraintStart_toEndOf="@+id/fabPlayPause"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
+        app:shapeAppearanceOverlay="@style/Widget.App.FAB.Circle"
+        app:layout_constraintTop_toTopOf="@id/fabPlayPause"
+        app:layout_constraintBottom_toBottomOf="@id/fabPlayPause"
+        app:layout_constraintStart_toEndOf="@id/fabPlayPause"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

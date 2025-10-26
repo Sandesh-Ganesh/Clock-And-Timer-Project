@@ -2,11 +2,14 @@ package com.example.clockandtimerapp.alarm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView; // Added for empty view
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,6 +35,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
     private final ArrayList<Alarm> alarms = new ArrayList<>();
     private AlarmAdapter adapter;
     private View rootView;
+    private TextView noAlarmsMessage; // Added
 
     public AlarmFragment() {
         super();
@@ -56,6 +60,15 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
                     String day = data.getStringExtra("day");
                     int dayOfWeek = mapDayToCalendar(day);
 
+                    // NEW: DUPLICATE CHECK IMPLEMENTATION
+                    if (AlarmStorage.isDuplicate(requireContext(), hour, minute, dayOfWeek)) {
+                        Toast.makeText(requireContext(),
+                                "Alarm already exists for this time and day.",
+                                Toast.LENGTH_LONG).show();
+                        return; // Do not save or schedule the duplicate alarm
+                    }
+                    // END DUPLICATE CHECK
+
                     int id = AlarmStorage.nextId(requireContext());
 
                     // NOTE: Constructor arguments must match Alarm model exactly (id, hour, minute, label, enabled, tone, vibrate, dayOfWeek)
@@ -65,6 +78,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
                     AlarmStorage.save(requireContext(), alarms);
                     AlarmScheduler.schedule(requireContext(), a);
                     adapter.submit(new ArrayList<>(alarms));
+                    updateEmptyView(); // Added
                 }
             });
 
@@ -125,6 +139,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
                                 // Optional (but safe) check if the RecyclerView itself is available
                                 // This ensures the list redraws even if DiffUtil is slow.
                                 adapter.notifyDataSetChanged();
+                                updateEmptyView(); // Added
                             });
                         }
                     }
@@ -148,6 +163,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
 
         // --- 1. SETUP RECYCLERVIEW AND ADAPTER (with null check) ---
         RecyclerView rv = view.findViewById(R.id.alarmList);
+        noAlarmsMessage = view.findViewById(R.id.noAlarmsMessage); // Added: Initialize TextView
 
         if (rv != null) {
             rv.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -170,6 +186,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
             }
 
             adapter.submit(new ArrayList<>(alarms));
+            updateEmptyView(); // Added: Initial check
+            checkAndRequestOverlayPermission();
         } else {
             Toast.makeText(requireContext(), "Error: Alarm List (R.id.alarmList) not found in layout!", Toast.LENGTH_LONG).show();
             return;
@@ -185,10 +203,6 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
             Toast.makeText(requireContext(), "Warning: Add Alarm Button (R.id.fab) not found in layout!", Toast.LENGTH_LONG).show();
         }
     }
-
-    // -------------------------------------------------------------------------
-    // ALARMADAPTER CALLBACKS
-    // -------------------------------------------------------------------------
     @Override
     public void onToggle(int position, boolean on) {
         if (position >= 0 && position < alarms.size()) {
@@ -212,6 +226,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
             AlarmScheduler.cancel(requireContext(), a);
             AlarmStorage.save(requireContext(), alarms);
             adapter.submit(new ArrayList<>(alarms));
+            updateEmptyView(); // Added
         }
     }
 
@@ -233,9 +248,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
         editExistingLauncher.launch(i);
     }
 
-    // -------------------------------------------------------------------------
-    // HELPER METHODS
-    // -------------------------------------------------------------------------
+    private void updateEmptyView() {
+        if (noAlarmsMessage != null) {
+            if (alarms.isEmpty()) {
+                noAlarmsMessage.setVisibility(View.VISIBLE);
+            } else {
+                noAlarmsMessage.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private int findIndexById(int id){
         for (int i = 0; i < alarms.size(); i++) {
             if (alarms.get(i).id == id) return i;
@@ -267,6 +289,31 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.Callbacks {
             case Calendar.FRIDAY: return "Friday";
             case Calendar.SATURDAY: return "Saturday";
             default: return null;
+        }
+    }
+    private final ActivityResultLauncher<Intent> overlayPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                // The user is redirected back here after attempting to grant the permission.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.canDrawOverlays(requireContext())) {
+                        Toast.makeText(requireContext(), "Alarm screen display is disabled.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(requireContext(), "Overlay permission granted.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+    // Add this helper method
+    private void checkAndRequestOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(requireContext())) {
+                // Permission is not granted, request it
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + requireContext().getPackageName()));
+
+                // NOTE: The request code is no longer needed with ActivityResultLauncher
+                overlayPermissionLauncher.launch(intent);
+            }
         }
     }
 }

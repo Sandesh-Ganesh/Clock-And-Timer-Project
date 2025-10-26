@@ -31,6 +31,9 @@ public class SettingsFragment extends Fragment {
 
     private TextView textTimeFormatSummary;
     private WorldClockManager clockManager;
+    // Inside onViewCreated(), add after other click listeners
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -48,6 +51,8 @@ public class SettingsFragment extends Fragment {
         // Initialize views
         RelativeLayout settingTimeFormat = view.findViewById(R.id.setting_time_format);
         RelativeLayout settingResetClock = view.findViewById(R.id.setting_reset_world_clock);
+        RelativeLayout settingResetAppData = view.findViewById(R.id.setting_reset_app_data);
+        settingResetAppData.setOnClickListener(v -> showResetAppDataDialog());
 
         // ✅ NEW VIEW INITIALIZATION: Delete All Alarms
         RelativeLayout settingDeleteAllAlarms = view.findViewById(R.id.setting_delete_all_alarms);
@@ -144,4 +149,35 @@ public class SettingsFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+    private void showResetAppDataDialog() {
+        ContextThemeWrapper themedContext = new ContextThemeWrapper(requireContext(), R.style.AlertDialogDarkTheme);
+        Context ctx = requireContext();
+
+        new AlertDialog.Builder(themedContext)
+                .setTitle("Confirm App Reset")
+                .setMessage("This will delete all World Clocks, Alarms, and reset all app settings. This action cannot be undone.")
+                .setPositiveButton("Reset App Data", (dialog, which) -> {
+
+                    // 1. Clear all World Clocks
+                    if (clockManager != null) {
+                        clockManager.saveClocks(new ArrayList<>());
+                    }
+
+                    // 2. Clear all Alarms
+                    List<Alarm> alarms = AlarmStorage.load(ctx);
+                    for (Alarm alarm : alarms) {
+                        AlarmScheduler.cancel(ctx, alarm);
+                    }
+                    AlarmStorage.save(ctx, new ArrayList<>());
+
+                    // 3. Reset app preferences (like 12/24 hour format)
+                    TimeFormatPreference.resetToDefault(ctx);
+
+                    Toast.makeText(ctx, "All app data has been reset.", Toast.LENGTH_LONG).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+
 }
