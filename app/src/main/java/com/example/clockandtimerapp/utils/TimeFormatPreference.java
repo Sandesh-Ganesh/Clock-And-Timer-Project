@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.DateFormat;
 
-/**
- * Handles persistence for the user's preferred time format (12-hour or 24-hour).
- */
 public class TimeFormatPreference {
     private static final String PREF_NAME = "app_settings";
     private static final String KEY_TIME_FORMAT_24H = "is_24_hour_format";

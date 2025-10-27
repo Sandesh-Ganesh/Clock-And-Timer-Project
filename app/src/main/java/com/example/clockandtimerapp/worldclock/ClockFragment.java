@@ -47,9 +47,6 @@ public class ClockFragment extends Fragment implements WorldClockAdapter.OnDelet
         }
     };
 
-    // **********************************************
-    // *** FIX: Re-enables the Settings Menu Icon ***
-    // **********************************************
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,9 +104,6 @@ public class ClockFragment extends Fragment implements WorldClockAdapter.OnDelet
         textCurrentDate.setText(dateFormat.format(currentTime));
     }
 
-    /**
-     * Called by AddClockFragment after a new city is selected.
-     */
     public void addNewClock(TimezoneInfo timezoneInfo) {
         if (!clockList.contains(timezoneInfo)) {
             // 1. Save using the Manager (CRITICAL)
@@ -150,7 +144,6 @@ public class ClockFragment extends Fragment implements WorldClockAdapter.OnDelet
         }
     }
 
-    // --- WorldClockAdapter.OnDeleteClickListener Implementation ---
 
     @Override
     public void onDeleteClicked(int position) {
@@ -165,7 +158,6 @@ public class ClockFragment extends Fragment implements WorldClockAdapter.OnDelet
         }).show(getParentFragmentManager(), "DeleteClockDialog");
     }
 
-    // --- Fragment Lifecycle ---
 
     @Override
     public void onResume() {

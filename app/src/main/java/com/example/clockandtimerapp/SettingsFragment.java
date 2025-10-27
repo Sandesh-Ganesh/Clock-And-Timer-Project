@@ -54,28 +54,22 @@ public class SettingsFragment extends Fragment {
         RelativeLayout settingResetAppData = view.findViewById(R.id.setting_reset_app_data);
         settingResetAppData.setOnClickListener(v -> showResetAppDataDialog());
 
-        // ✅ NEW VIEW INITIALIZATION: Delete All Alarms
         RelativeLayout settingDeleteAllAlarms = view.findViewById(R.id.setting_delete_all_alarms);
 
         textTimeFormatSummary = view.findViewById(R.id.text_time_format_summary);
 
-        // Update initial state
         updateTimeFormatSummary();
 
-        // 1. Time Format Click Listener
         settingTimeFormat.setOnClickListener(v -> showTimeFormatDialog());
 
-        // 2. Reset World Clock Click Listener
         settingResetClock.setOnClickListener(v -> showResetClockDialog());
 
-        // ✅ 3. Delete All Alarms Click Listener
         settingDeleteAllAlarms.setOnClickListener(v -> showDeleteAllAlarmsDialog());
     }
 
     private void updateTimeFormatSummary() {
         boolean is24H = TimeFormatPreference.is24HourFormat(requireContext());
         String formatText = is24H ? "24-hour format (HH:mm)" : "12-hour format (h:mm a)";
-        // Assuming R.string.currently_set_to exists and takes one String argument
         textTimeFormatSummary.setText(getString(R.string.currently_set_to, formatText));
     }
 
@@ -120,7 +114,6 @@ public class SettingsFragment extends Fragment {
                 .show();
     }
 
-    // ✅ NEW METHOD: Delete All Alarms Logic
     private void showDeleteAllAlarmsDialog() {
         ContextThemeWrapper themedContext = new ContextThemeWrapper(requireContext(), R.style.AlertDialogDarkTheme);
         Context ctx = requireContext();

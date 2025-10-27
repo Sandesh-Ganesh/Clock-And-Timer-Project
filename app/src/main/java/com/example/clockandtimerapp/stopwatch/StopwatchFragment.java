@@ -121,16 +121,12 @@ public class StopwatchFragment extends Fragment {
             boolean timeExists = lastTotalElapsedMs > 0;
 
             if (lapsExist) {
-                // Scenario 1: Laps exist. ALWAYS show stats dialog before resetting.
                 showStatsDialog();
             } else if (timeExists) {
-                // Scenario 2: Time exists, but no laps. Perform immediate, silent reset.
                 sendServiceAction(StopwatchService.ACTION_RESET);
                 txtElapsed.setText(formatTime(0));
                 updatePlayPauseIcon(view);
             } else {
-                // Scenario 3: Time is 0 and no laps. Do nothing (already reset).
-                // We still call the reset action for safety, though it shouldn't be necessary.
                 sendServiceAction(StopwatchService.ACTION_RESET);
             }
         });
@@ -209,12 +205,9 @@ public class StopwatchFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        // 1. Register the BroadcastReceiver
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
                 stopwatchUpdateReceiver, new IntentFilter(StopwatchService.ACTION_UPDATE_BROADCAST));
 
-        // 2. FIX: Request the current state from the running service
-        // This makes sure the UI updates instantly when returning from the notification.
         sendServiceAction(StopwatchService.ACTION_REQUEST_STATE);
     }
 

@@ -162,9 +162,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Loads the very first fragment, NOT added to the back stack.
-     */
     private void loadInitialFragment(Fragment fragment, String title) {
         toolbar.setTitle(title);
         fragmentManager.beginTransaction()
@@ -172,9 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /**
-     * Loads a primary fragment from the bottom navigation. Clears existing back stack.
-     */
     private void loadPrimaryFragment(Fragment fragment, String title) {
         toolbar.setTitle(title);
         // Clear all previous fragments from the back stack
@@ -185,9 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /**
-     * Loads a secondary fragment (like Settings), adding it to the back stack.
-     */
     public void loadFragment(Fragment fragment, String title) {
         toolbar.setTitle(title);
 
@@ -197,17 +188,10 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /**
-     * Public getter method for fragments to access BottomNavigationView
-     * This allows fragments to show/hide the bottom navigation if needed
-     */
     public BottomNavigationView getBottomNavigationView() {
         return bottomNavigationView;
     }
 
-    /**
-     * Helper method to update toolbar title based on current fragment
-     */
     private void updateToolbarTitleForFragment(Fragment fragment) {
         String title = "Clock"; // default
 

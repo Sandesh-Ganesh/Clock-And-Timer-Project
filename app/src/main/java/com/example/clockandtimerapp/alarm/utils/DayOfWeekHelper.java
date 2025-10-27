@@ -14,10 +14,6 @@ public class DayOfWeekHelper {
         return c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
     }
 
-    /**
-     * Generates a list of 7 display strings starting with Today and Tomorrow.
-     * Example output: ["Today (Friday)", "Tomorrow (Saturday)", "Sunday", "Monday", ...]
-     */
     public static List<String> getRelativeDayList() {
         List<String> dayList = new ArrayList<>(7);
         Calendar calendar = Calendar.getInstance();

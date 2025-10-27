@@ -26,7 +26,6 @@ import com.example.clockandtimerapp.R; // Assumes your R file path is here
 
 import java.util.Locale;
 
-// CHANGE: Class extends Fragment
 public class ChessTimerFragment extends Fragment {
 
     private TextView tvTopTime, tvBottomTime;
@@ -421,7 +420,6 @@ public class ChessTimerFragment extends Fragment {
         if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    // ---- ADJUST TIME dialog ----
     private void showAdjustTimeDialog(boolean isTop) {
         LayoutInflater inflater = LayoutInflater.from(requireContext()); // CHANGE: Use requireContext()
         View v = inflater.inflate(R.layout.dialog_adjust_time, null);
@@ -463,7 +461,6 @@ public class ChessTimerFragment extends Fragment {
                 return;
             }
 
-            // Adjust only the tapped player’s remaining time
             if (isTop) {
                 topRemaining = newMs;
                 if (tvTopPreset != null)
@@ -488,8 +485,7 @@ public class ChessTimerFragment extends Fragment {
     }
 
     private void styleNumberPicker(NumberPicker np, int color, float sizeSp) {
-        // This method relies on NumberPicker, which is not used in the XML provided (it uses EditTexts), 
-        // but keeping it here for completeness/future proofing.
+
         if (np == null) return;
         final int count = np.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -527,7 +523,6 @@ public class ChessTimerFragment extends Fragment {
         int incMin = (int) (incMs / 1000 / 60);
         int incSec = (int) ((incMs / 1000) % 60);
 
-        // Always show minutes for increment (so user sees both fields)
         String incPart = String.format(Locale.getDefault(), "%d min", incMin);
         if (incSec > 0) incPart = incPart + " " + String.format(Locale.getDefault(), "%d sec", incSec);
 
@@ -542,10 +537,9 @@ public class ChessTimerFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() { // CHANGE: Use onDestroyView() for Fragment view cleanup
+    public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacks(tickRunnable);
-        // Remove the reference to the view to avoid memory leaks
         rootView = null;
     }
 }

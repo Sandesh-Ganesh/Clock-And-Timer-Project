@@ -1,5 +1,3 @@
-// WorldClockAdapter.java
-
 package com.example.clockandtimerapp.worldclock;
 
 import android.content.Context;

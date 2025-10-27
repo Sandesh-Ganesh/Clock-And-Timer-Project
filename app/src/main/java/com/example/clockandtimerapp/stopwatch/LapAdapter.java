@@ -20,13 +20,11 @@ public class LapAdapter extends RecyclerView.Adapter<LapAdapter.VH> {
     final List<Lap> data = new ArrayList<>();
 
     public LapAdapter(List<Lap> initialData) {
-        // Use the list reference from the Fragment to allow direct manipulation (though submit is safer)
         if (initialData != null) {
             this.data.addAll(initialData);
         }
     }
 
-    // Updated submit method to receive and use Lap objects
     public void submit(List<Lap> newData) {
         data.clear();
         data.addAll(newData);

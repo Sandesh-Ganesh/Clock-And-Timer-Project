@@ -2,9 +2,6 @@ package com.example.clockandtimerapp.worldclock;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Data model for a city clock saved by the user.
- */
 public class TimezoneInfo implements Serializable {
 
     private final String countryName;

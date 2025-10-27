@@ -8,9 +8,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles persistence for the list of world clocks using SharedPreferences and Gson.
- */
 public class WorldClockManager {
     private static final String PREF_NAME = "world_clock_data";
     private static final String KEY_CLOCK_LIST = "saved_clocks";

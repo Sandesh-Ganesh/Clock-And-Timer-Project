@@ -34,9 +34,6 @@ public class AddClockFragment extends Fragment implements AddClockAdapter.OnCity
     private List<TimezoneInfo> filteredClocks;
     private AddClockAdapter adapter;
 
-    /**
-     * Constructor for passing data from ClockFragment (list of already added clocks)
-     */
     public AddClockFragment(List<TimezoneInfo> addedClocks) {
         this.addedClocks = addedClocks;
     }
@@ -99,8 +96,6 @@ public class AddClockFragment extends Fragment implements AddClockAdapter.OnCity
         adapter.updateList(filteredClocks);
     }
 
-    // --- AddClockAdapter.OnCitySelectListener Implementation ---
-
     @Override
     public void onCitySelected(TimezoneInfo selectedInfo) {
         Log.d("AddClock", "City selected: " + selectedInfo.getCityName() + ". Attempting to communicate with target.");
@@ -128,10 +123,7 @@ public class AddClockFragment extends Fragment implements AddClockAdapter.OnCity
         // Pop fragment off the back stack to return to the ClockFragment view
         getParentFragmentManager().popBackStack();
     }
-    /**
-     * Calculates the time difference in minutes from India Standard Time (IST)
-     * for persistence, fulfilling the "faster calculation" requirement.
-     */
+
     private TimezoneInfo createTimezoneInfoWithDifference(String country, String city, String timezoneId) {
         TimeZone indianTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
         TimeZone selectedTimeZone = TimeZone.getTimeZone(timezoneId);
@@ -146,9 +138,6 @@ public class AddClockFragment extends Fragment implements AddClockAdapter.OnCity
         return new TimezoneInfo(country, city, timezoneId, differenceMinutes);
     }
 
-    /**
-     * STUB: Master list of available timezones.
-     */
     private List<TimezoneInfo> createMasterTimezoneList() {
         List<TimezoneInfo> list = new ArrayList<>();
         // Note: differenceMinutes is set to 0 here; it will be calculated on selection.
